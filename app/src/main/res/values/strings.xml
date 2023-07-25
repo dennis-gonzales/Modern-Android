@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Modern Android</string>
+    <string name="games">Games</string>
+    <string name="stores">Stores</string>
 </resources>

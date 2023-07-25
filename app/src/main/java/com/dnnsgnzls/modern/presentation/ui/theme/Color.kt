@@ -1,4 +1,4 @@
-package com.dnnsgnzls.modern.ui.theme
+package com.dnnsgnzls.modern.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

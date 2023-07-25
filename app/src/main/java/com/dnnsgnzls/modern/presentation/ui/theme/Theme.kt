@@ -1,4 +1,4 @@
-package com.dnnsgnzls.modern.ui.theme
+package com.dnnsgnzls.modern.presentation.ui.theme
 
 import android.app.Activity
 import android.os.Build
