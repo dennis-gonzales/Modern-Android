@@ -10,7 +10,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object ApiService {
-    private const val BASE_URL = "https://api.rawg.io/api"
+    private const val BASE_URL = "https://api.rawg.io/"
 
     private fun getRetrofit(): Retrofit {
         val clientInterceptor = createClientInterceptor()

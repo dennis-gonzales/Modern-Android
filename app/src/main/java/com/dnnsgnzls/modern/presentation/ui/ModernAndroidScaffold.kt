@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -29,13 +30,17 @@ fun ModernAndroidScaffold() {
         ) { PaddingValues ->
             val modifier = Modifier.padding(PaddingValues)
 
-            NavHost(navController = navController, startDestination = Screen.Stores.route) {
+            NavHost(navController = navController, startDestination = Screen.Games.route) {
                 composable(Screen.Stores.route) {
                     StoreListScreen()
                 }
                 composable(Screen.Games.route) { backStackEntry ->
                     val storeId = backStackEntry.arguments?.getInt(Args.StoreId)
-                    GameListScreen()
+                    GameListScreen(
+                        navController = navController,
+                        gamesViewModel = hiltViewModel(),
+                        paddingValues = PaddingValues
+                    )
                 }
             }
         }

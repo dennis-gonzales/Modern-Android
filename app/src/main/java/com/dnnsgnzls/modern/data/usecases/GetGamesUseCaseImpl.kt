@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 class GetGamesUseCaseImpl(
     private val rawgRepository: RawgRepository
 ) : GetGamesUseCase {
-    override operator fun invoke(): Flow<Response<List<Games>>> {
-        return rawgRepository.getGames()
+    override operator fun invoke(searchQuery: String): Flow<Response<Games>> {
+        return rawgRepository.getGames(searchQuery)
     }
 }

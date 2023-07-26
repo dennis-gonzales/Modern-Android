@@ -6,20 +6,19 @@ import com.dnnsgnzls.modern.domain.repository.RawgRepository
 import com.dnnsgnzls.modern.framework.network.RawgApi
 import com.dnnsgnzls.modern.framework.utils.Response
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 
 class RawgRepositoryImpl(
     private val rawgApi: RawgApi,
-    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val dispatcher: CoroutineDispatcher
 ) : RawgRepository {
-    override fun getGames(): Flow<Response<List<Games>>> = flow {
+    override fun getGames(searchQuery: String): Flow<Response<Games>> = flow {
         try {
             emit(Response.Loading)
-            val gamesDto = rawgApi.games()
-            val games = gamesDto.map { mapGamesFromDto(it) }
+            val gamesDto = rawgApi.games(searchQuery)
+            val games = mapGamesFromDto(gamesDto)
 
             emit(Response.Success(games))
         } catch (e: Exception) {
