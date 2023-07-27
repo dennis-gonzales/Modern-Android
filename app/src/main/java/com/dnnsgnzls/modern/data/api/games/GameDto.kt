@@ -10,13 +10,13 @@ import com.dnnsgnzls.modern.data.api.color.ColorDto
 import com.google.gson.annotations.SerializedName
 
 data class GameDto(
-    val id: Long?,
-    val slug: String?,
-    val name: String?,
-    val released: String?,
+    val id: Long,
+    val slug: String,
+    val name: String,
+    val released: String,
 //    val tba: Boolean,
     @SerializedName("background_image")
-    val backgroundImage: String?,
+    val backgroundImage: String,
     val rating: Double?,
 //    @SerializedName("rating_top")
 //    val ratingTop: Long,

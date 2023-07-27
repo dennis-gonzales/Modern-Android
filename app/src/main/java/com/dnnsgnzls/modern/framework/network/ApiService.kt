@@ -1,7 +1,7 @@
 package com.dnnsgnzls.modern.framework.network
 
 import com.dnnsgnzls.modern.BuildConfig
-import com.dnnsgnzls.modern.framework.constants.ApiConstants
+import com.dnnsgnzls.modern.framework.constants.Constants
 import okhttp3.HttpUrl
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -22,7 +22,7 @@ object ApiService {
             .build()
 
         return Retrofit.Builder()
-            .baseUrl(ApiConstants.BASE_URL)
+            .baseUrl(Constants.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .build()
