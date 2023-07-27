@@ -1,5 +1,6 @@
 package com.dnnsgnzls.modern.presentation.ui.views
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -7,6 +8,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -26,7 +29,7 @@ import com.dnnsgnzls.modern.domain.mock.Dota2
 import com.dnnsgnzls.modern.domain.model.Game
 import com.dnnsgnzls.modern.presentation.ui.theme.ModernAndroidTheme
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun PreviewGameItem() {
     ModernAndroidTheme {
@@ -37,50 +40,59 @@ fun PreviewGameItem() {
 
 @Composable
 fun GameItem(game: Game) {
-    Row(
-        modifier = Modifier
-            .padding(16.dp)
-            .fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
+    Card(
+        shape = MaterialTheme.shapes.medium,
+        colors = CardDefaults.cardColors(),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 10.dp,
+        ),
+        modifier = Modifier.padding(top = 8.dp, start = 8.dp, end = 8.dp)
     ) {
-        AsyncImage(
-            model = game.backgroundImage,
-            contentDescription = game.name,
+        Row(
             modifier = Modifier
-                .height(100.dp)
-                .width(100.dp)
-                .clip(RoundedCornerShape(10.dp)),
-            contentScale = ContentScale.Crop,
-            placeholder = painterResource(id = R.drawable.ic_game)
-        )
-
-        Column(
-            modifier = Modifier
-                .padding(start = 16.dp)
-                .align(Alignment.CenterVertically)
+                .padding(16.dp)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = game.name ?: "N/A",
-                style = MaterialTheme.typography.bodyLarge,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+            AsyncImage(
+                model = game.backgroundImage,
+                contentDescription = game.name,
+                modifier = Modifier
+                    .height(100.dp)
+                    .width(100.dp)
+                    .clip(RoundedCornerShape(10.dp)),
+                contentScale = ContentScale.Crop,
+                placeholder = painterResource(id = R.drawable.ic_game)
             )
-            Text(
-                text = "Released: ${game.released}",
-                style = MaterialTheme.typography.labelSmall,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_star),
-                    contentDescription = "Rating",
-                    tint = Color.Yellow
+
+            Column(
+                modifier = Modifier
+                    .padding(start = 16.dp)
+                    .align(Alignment.CenterVertically)
+            ) {
+                Text(
+                    text = game.name ?: "N/A",
+                    style = MaterialTheme.typography.bodyLarge,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    text = game.rating?.toString() ?: "N/A",
-                    style = MaterialTheme.typography.labelSmall
+                    text = "Released: ${game.released}",
+                    style = MaterialTheme.typography.labelSmall,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_star),
+                        contentDescription = "Rating",
+                        tint = Color.Yellow
+                    )
+                    Text(
+                        text = game.rating?.toString() ?: "N/A",
+                        style = MaterialTheme.typography.labelSmall
+                    )
+                }
             }
         }
     }
