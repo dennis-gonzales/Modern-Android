@@ -1,7 +1,9 @@
 package com.dnnsgnzls.modern.framework.di
 
-import com.dnnsgnzls.modern.data.usecases.GamesUseCaseImpl
-import com.dnnsgnzls.modern.domain.repository.RawgRepository
+import com.dnnsgnzls.modern.data.usecases.GetGamesUseCaseImpl
+import com.dnnsgnzls.modern.data.usecases.SaveGameUseCaseImpl
+import com.dnnsgnzls.modern.data.usecases.SaveGamesUseCaseImpl
+import com.dnnsgnzls.modern.domain.repository.GamesRepository
 import com.dnnsgnzls.modern.domain.usecases.GamesUseCases
 import dagger.Module
 import dagger.Provides
@@ -12,10 +14,13 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 object UseCasesModule {
 
-    /// <- Parameter`rawgRepository` is provided in `RepositoryModule.kt` ->
-    /// < The `UseCasesModule` are being injected to `ViewModels` ->
+    /// <- Parameter`gamesRepository` is provided in `RepositoryModule.kt` ->
     @Provides
-    fun provideGamesUseCases(rawgRepository: RawgRepository): GamesUseCases {
-        return GamesUseCases(GamesUseCaseImpl(rawgRepository))
+    fun provideGamesUseCases(gamesRepository: GamesRepository): GamesUseCases {
+        return GamesUseCases(
+            GetGamesUseCaseImpl(gamesRepository),
+            SaveGameUseCaseImpl(gamesRepository),
+            SaveGamesUseCaseImpl(gamesRepository)
+        )
     }
 }

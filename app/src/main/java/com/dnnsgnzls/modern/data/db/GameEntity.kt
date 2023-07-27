@@ -23,7 +23,7 @@ data class GameEntity(
     val rating: Double?
 ) {
     companion object {
-        fun fromGame(game: Game): GameEntity {
+        fun fromDomainModel(game: Game): GameEntity {
             return GameEntity(
                 id = game.id,
                 slug = game.slug,
@@ -33,5 +33,16 @@ data class GameEntity(
                 rating = game.rating
             )
         }
+    }
+
+    fun toDomainModel(): Game {
+        return Game(
+            id = this.id,
+            slug = this.slug,
+            name = this.name,
+            released = this.released,
+            backgroundImage = this.backgroundImage,
+            rating = this.rating
+        )
     }
 }

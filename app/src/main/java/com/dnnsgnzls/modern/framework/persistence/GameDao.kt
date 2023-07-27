@@ -15,6 +15,9 @@ interface GameDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(gameEntity: GameEntity)
 
+    @Insert
+    suspend fun insertAll(heroList: List<GameEntity>)
+
     @Query("SELECT * FROM $GAME_TABLE WHERE id=:gameId")
     fun get(gameId: Long): Flow<GameEntity?>
 
@@ -22,7 +25,7 @@ interface GameDao {
     fun getAll(): Flow<List<GameEntity>>
 
     @Update
-    fun update(gameEntity: GameEntity)
+    suspend fun update(gameEntity: GameEntity)
 
     @Delete
     suspend fun delete(gameEntity: GameEntity)

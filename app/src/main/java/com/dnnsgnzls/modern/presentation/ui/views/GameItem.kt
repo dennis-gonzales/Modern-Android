@@ -1,6 +1,7 @@
 package com.dnnsgnzls.modern.presentation.ui.views
 
 import android.content.res.Configuration
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -33,20 +34,22 @@ import com.dnnsgnzls.modern.presentation.ui.theme.ModernAndroidTheme
 @Composable
 fun PreviewGameItem() {
     ModernAndroidTheme {
-        GameItem(Dota2)
+        GameItem(Dota2) { /* no-op for click */ }
     }
 }
 
 
 @Composable
-fun GameItem(game: Game) {
+fun GameItem(game: Game, onClick: (game: Game) -> Unit) {
     Card(
         shape = MaterialTheme.shapes.medium,
         colors = CardDefaults.cardColors(),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 10.dp,
         ),
-        modifier = Modifier.padding(top = 8.dp, start = 8.dp, end = 8.dp)
+        modifier = Modifier
+            .padding(top = 8.dp, start = 8.dp, end = 8.dp)
+            .clickable { onClick(game) }
     ) {
         Row(
             modifier = Modifier

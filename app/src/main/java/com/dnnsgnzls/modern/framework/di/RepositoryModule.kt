@@ -1,12 +1,16 @@
 package com.dnnsgnzls.modern.framework.di
 
-import com.dnnsgnzls.modern.data.repository.RawgRepositoryImpl
-import com.dnnsgnzls.modern.domain.repository.RawgRepository
+import android.content.Context
+import com.dnnsgnzls.modern.data.repository.GamesRepositoryImpl
+import com.dnnsgnzls.modern.domain.repository.GamesRepository
 import com.dnnsgnzls.modern.framework.network.ApiService
 import com.dnnsgnzls.modern.framework.network.RawgApi
+import com.dnnsgnzls.modern.framework.persistence.DatabaseService
+import com.dnnsgnzls.modern.framework.persistence.GameDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -24,13 +28,29 @@ object RepositoryModule {
     @Provides
     fun provideCoroutineDispatcher(): CoroutineDispatcher = Dispatchers.IO
 
-    /// <- Provides a `RawgRepository` to be used by `UseCasesModule.kt` ->
+    /// <- `DatabaseService` is a singleton to ensure data consistency and avoid DB locks ->
     @Singleton
     @Provides
-    fun provideRawgRepository(
+    fun provideDatabaseService(@ApplicationContext context: Context): DatabaseService {
+        return DatabaseService(context)
+    }
+
+    /// <- `GameDao` is a singleton and it's lifecycle matches its parent `DatabaseService` ->
+    @Singleton
+    @Provides
+    fun provideGameDao(databaseService: DatabaseService): GameDao {
+        return databaseService.gameDao()
+    }
+
+
+    /// <- Provides a `GamesRepository` to be used by `UseCasesModule.kt` ->
+    @Singleton
+    @Provides
+    fun provideGamesRepository(
         rawgApi: RawgApi,
+        gameDao: GameDao,
         coroutineDispatcher: CoroutineDispatcher
-    ): RawgRepository {
-        return RawgRepositoryImpl(rawgApi, coroutineDispatcher)
+    ): GamesRepository {
+        return GamesRepositoryImpl(rawgApi, gameDao, coroutineDispatcher)
     }
 }

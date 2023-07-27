@@ -1,10 +1,12 @@
 package com.dnnsgnzls.modern.presentation.ui.views
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.currentCompositionLocalContext
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,6 +36,8 @@ fun GameListScreen(
             onQueryTextChanged = gamesViewModel::inputQueryChanged
         )
 
-        GamesContent(gamesState = gamesState)
+        GamesContent(gamesState = gamesState) {
+            gamesViewModel.saveFavouriteGame(it)
+        }
     }
 }

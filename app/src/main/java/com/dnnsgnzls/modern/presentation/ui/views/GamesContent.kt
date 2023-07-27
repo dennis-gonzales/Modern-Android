@@ -5,6 +5,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.dnnsgnzls.modern.domain.mock.Dota2
+import com.dnnsgnzls.modern.domain.model.Game
 import com.dnnsgnzls.modern.domain.model.Games
 import com.dnnsgnzls.modern.framework.utils.Response
 import com.dnnsgnzls.modern.presentation.ui.theme.ModernAndroidTheme
@@ -21,7 +22,7 @@ fun PreviewSucessContent() {
     )
 
     ModernAndroidTheme {
-        GamesContent(Response.Success(games))
+        GamesContent(Response.Success(games)) { /* no-op for click */ }
     }
 }
 
@@ -29,7 +30,7 @@ fun PreviewSucessContent() {
 @Composable
 fun PreviewErrorContent() {
     ModernAndroidTheme {
-        GamesContent(Response.Error(Exception("Test exception for preview!")))
+        GamesContent(Response.Error(Exception("Test exception for preview!"))) { /* no-op for click */ }
     }
 }
 
@@ -37,14 +38,14 @@ fun PreviewErrorContent() {
 @Composable
 fun PreviewLoadingContent() {
     ModernAndroidTheme {
-        GamesContent(Response.Loading)
+        GamesContent(Response.Loading) { /* no-op for click */ }
     }
 }
 
 @Composable
-fun GamesContent(gamesState: Response<Games>) {
+fun GamesContent(gamesState: Response<Games>, onItemClick: (game: Game) -> Unit) {
     when (gamesState) {
-        is Response.Success -> GameList(games = gamesState.data)
+        is Response.Success -> GameList(games = gamesState.data, onItemClick = onItemClick)
         is Response.Loading -> CircularProgressIndicator()
         is Response.Error -> Text(text = "Error: ${gamesState.exception.message}")
     }

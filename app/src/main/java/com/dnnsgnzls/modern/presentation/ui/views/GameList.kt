@@ -15,6 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dnnsgnzls.modern.domain.mock.Dota2
+import com.dnnsgnzls.modern.domain.model.Game
 import com.dnnsgnzls.modern.domain.model.Games
 import com.dnnsgnzls.modern.presentation.ui.theme.ModernAndroidTheme
 
@@ -29,7 +30,7 @@ fun PreviewGameList() {
                 previous = null,
                 results = listOf(Dota2, Dota2, Dota2)
             )
-        )
+        ) {} /* no-op for click */
     }
 }
 
@@ -44,14 +45,14 @@ fun PreviewEmptyGameList() {
                 previous = null,
                 results = listOf()
             )
-        )
+        ) {} /* no-op for click */
+
     }
 }
 
 
-
 @Composable
-fun GameList(games: Games) {
+fun GameList(games: Games, onItemClick: (game: Game) -> Unit) {
     if (games.results.isEmpty()) {
         Box(
             contentAlignment = Alignment.Center,
@@ -69,7 +70,7 @@ fun GameList(games: Games) {
 
     LazyColumn {
         items(games.results) { game ->
-            GameItem(game)
+            GameItem(game, onItemClick)
         }
         item {
             Spacer(modifier = Modifier.height(8.dp))
