@@ -5,5 +5,5 @@ import com.dnnsgnzls.modern.framework.utils.Response
 import kotlinx.coroutines.flow.Flow
 
 interface RawgRepository {
-    fun getGames(searchQuery: String): Flow<Response<Games>>
+    fun getGames(searchQuery: String, page: Int): Flow<Response<Games>>
 }

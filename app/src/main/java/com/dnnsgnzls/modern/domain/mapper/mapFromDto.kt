@@ -8,6 +8,8 @@ import com.dnnsgnzls.modern.domain.model.Games
 fun mapGamesFromDto(gamesDto: GamesDto): Games {
     return Games(
         count = gamesDto.count,
+        next = gamesDto.next,
+        previous = gamesDto.previous,
         results = gamesDto.results.map { mapGameFromDto(it) }
     )
 }

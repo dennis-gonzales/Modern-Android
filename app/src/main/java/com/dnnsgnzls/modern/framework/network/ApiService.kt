@@ -1,6 +1,7 @@
 package com.dnnsgnzls.modern.framework.network
 
 import com.dnnsgnzls.modern.BuildConfig
+import com.dnnsgnzls.modern.framework.constants.ApiConstants
 import okhttp3.HttpUrl
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -10,8 +11,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object ApiService {
-    private const val BASE_URL = "https://api.rawg.io/"
-
     private fun getRetrofit(): Retrofit {
         val clientInterceptor = createClientInterceptor()
         val loggerInterceptor = createLoggerInterceptor()
@@ -23,7 +22,7 @@ object ApiService {
             .build()
 
         return Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(ApiConstants.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .build()

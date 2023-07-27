@@ -36,20 +36,35 @@ class GamesViewModel @Inject constructor(
     @OptIn(FlowPreview::class)
     private fun fetchGames() {
         viewModelScope.launch {
-            fetchGamesForQuery("")
+            fetchGamesForQuery("", 1)
 
             queryInput.receiveAsFlow()
-//                .filter { }
                 .debounce(500)
                 .collect { searchQuery ->
-                    fetchGamesForQuery(searchQuery)
+                    fetchGamesForQuery(searchQuery, 1)
                 }
         }
     }
 
-    private suspend fun fetchGamesForQuery(searchQuery: String) {
-        repository.getGames(searchQuery).collect { response ->
+    private suspend fun fetchGamesForQuery(searchQuery: String, page: Int) {
+        repository.getGames(searchQuery, page).collect { response ->
             _games.value = response
+//            when (response) {
+//                is Response.Success -> {
+//                    val prevGames: GameMock? = when (_games.value) {
+//                        is Response.Success -> {
+//                            (_games.value as Response.Success<GameMock>).data
+//                        }
+//                        else -> null
+//                    }
+//                    val newGames = response.data
+//                    val updatedGames = prevGames?.updateWith(newGames) ?: newGames
+//
+//                    _games.value = Response.Success(updatedGames)
+//                    currentPage++
+//                }
+//                else -> _games.value = response
+//            }
         }
     }
 

@@ -14,10 +14,10 @@ class RawgRepositoryImpl(
     private val rawgApi: RawgApi,
     private val dispatcher: CoroutineDispatcher
 ) : RawgRepository {
-    override fun getGames(searchQuery: String): Flow<Response<Games>> = flow {
+    override fun getGames(searchQuery: String, page: Int): Flow<Response<Games>> = flow {
         try {
             emit(Response.Loading)
-            val gamesDto = rawgApi.games(searchQuery)
+            val gamesDto = rawgApi.games(searchQuery, page)
             val games = mapGamesFromDto(gamesDto)
 
             emit(Response.Success(games))

@@ -56,7 +56,7 @@ fun GameListScreen(
             value = queryTextState,
             onValueChange = gamesViewModel::inputQueryChanged,
             label = { Text(text = "Search for games") },
-            placeholder = { Text(text = "Games") },
+            placeholder = { Text(text = "GameMock") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
         )
 
@@ -73,7 +73,8 @@ fun GameListScreen(
             when (val currentGamesState: Response<Games> =
                 gamesState) { // creating an immutable  copy of the property
                 is Response.Success -> {
-                    ShowCharactersList(currentGamesState.data, navController)
+//                    ShowCharactersList(currentGamesState.data, navController)
+                    GameList(games = currentGamesState.data)
                 }
 
                 is Response.Loading -> {
@@ -89,58 +90,58 @@ fun GameListScreen(
     }
 }
 
-@Composable
-fun ShowCharactersList(
-    response: Games,
-    navController: NavHostController
-) {
-    response.let { games ->
-        LazyColumn(
-            modifier = Modifier.background(Color.LightGray),
-            verticalArrangement = Arrangement.Top
-        ) {
-            items(games.results) { result ->
-                val imageUrl = result.backgroundImage
-                val title = result.name
-                val description = result.released
-                val context = LocalContext.current
-                val id = result.id
-
-                Column(
-                    modifier = Modifier
-                        .padding(4.dp)
-                        .clip(RoundedCornerShape(5.dp))
-                        .background(Color.White)
-                        .padding(4.dp)
-                        .fillMaxWidth()
-                        .wrapContentHeight()
-//                            .clickable {
-//                                if (result.id != null)
-//                                    navController.navigate(Destination.CharacterDetail.createRoute(id))
-//                                else
-//                                    Toast
-//                                        .makeText(context, "Character id is null", Toast.LENGTH_SHORT)
-//                                        .show()
-//                            }
-                ) {
-                    Row(modifier = Modifier.fillMaxWidth()) {
-                        AsyncImage(
-                            model = imageUrl,
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .padding(4.dp)
-                                .width(100.dp)
-                        )
-
-                        Column(modifier = Modifier.padding(4.dp)) {
-                            Text(text = title ?: "Unnamed", fontWeight = FontWeight.Bold, fontSize = 20.sp)
-                        }
-                    }
-
-                    Text(text = description ?: "Unknown", maxLines = 4, fontSize = 14.sp)
-                }
-            }
-        }
-    }
-}
+//@Composable
+//fun ShowCharactersList(
+//    response: GameMock,
+//    navController: NavHostController
+//) {
+//    response.let { games ->
+//        LazyColumn(
+//            modifier = Modifier.background(Color.LightGray),
+//            verticalArrangement = Arrangement.Top
+//        ) {
+//            items(games.results) { result ->
+//                val imageUrl = result.backgroundImage
+//                val title = result.name
+//                val description = result.released
+//                val context = LocalContext.current
+//                val id = result.id
+//
+//                Column(
+//                    modifier = Modifier
+//                        .padding(4.dp)
+//                        .clip(RoundedCornerShape(5.dp))
+//                        .background(Color.White)
+//                        .padding(4.dp)
+//                        .fillMaxWidth()
+//                        .wrapContentHeight()
+////                            .clickable {
+////                                if (result.id != null)
+////                                    navController.navigate(Destination.CharacterDetail.createRoute(id))
+////                                else
+////                                    Toast
+////                                        .makeText(context, "Character id is null", Toast.LENGTH_SHORT)
+////                                        .show()
+////                            }
+//                ) {
+//                    Row(modifier = Modifier.fillMaxWidth()) {
+//                        AsyncImage(
+//                            model = imageUrl,
+//                            contentDescription = null,
+//                            contentScale = ContentScale.Crop,
+//                            modifier = Modifier
+//                                .padding(4.dp)
+//                                .width(100.dp)
+//                        )
+//
+//                        Column(modifier = Modifier.padding(4.dp)) {
+//                            Text(text = title ?: "Unnamed", fontWeight = FontWeight.Bold, fontSize = 20.sp)
+//                        }
+//                    }
+//
+//                    Text(text = description ?: "Unknown", maxLines = 4, fontSize = 14.sp)
+//                }
+//            }
+//        }
+//    }
+//}

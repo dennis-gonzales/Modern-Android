@@ -4,9 +4,9 @@ import com.dnnsgnzls.modern.data.api.filters.FiltersDto
 import com.google.gson.annotations.SerializedName
 
 data class GamesDto(
-    val count: Long,
-//    val next: String?,
-//    val previous: String?,
+    val count: Int,
+    val next: String?,
+    val previous: String?,
     val results: List<GameDto>,
 //    @SerializedName("seo_title")
 //    val seoTitle: String,

@@ -5,9 +5,10 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface RawgApi {
-    @GET("/api/games")
+    @GET("/ApiConstants/games")
     suspend fun games(
         @Query("search") searchQuery: String,
+        @Query("page") page: Int,
         @Query("search_precise") searchPrecise: Boolean = true
     ): GamesDto
 }
