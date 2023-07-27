@@ -1,10 +1,8 @@
 package com.dnnsgnzls.modern.presentation.ui
 
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
@@ -27,9 +25,7 @@ fun ModernAndroidScaffold() {
     ModernAndroidTheme {
         Scaffold(
             bottomBar = { }
-        ) { PaddingValues ->
-            val modifier = Modifier.padding(PaddingValues)
-
+        ) { paddingValues ->
             NavHost(navController = navController, startDestination = Screen.Games.route) {
                 composable(Screen.Stores.route) {
                     StoreListScreen()
@@ -39,11 +35,10 @@ fun ModernAndroidScaffold() {
                     GameListScreen(
                         navController = navController,
                         gamesViewModel = hiltViewModel(),
-                        paddingValues = PaddingValues
+                        paddingValues = paddingValues
                     )
                 }
             }
         }
     }
 }
-

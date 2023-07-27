@@ -24,11 +24,14 @@ import coil.compose.AsyncImage
 import com.dnnsgnzls.modern.R
 import com.dnnsgnzls.modern.domain.mock.Dota2
 import com.dnnsgnzls.modern.domain.model.Game
+import com.dnnsgnzls.modern.presentation.ui.theme.ModernAndroidTheme
 
 @Preview(showBackground = true)
 @Composable
-fun GameItemPreview() {
-    GameItem(Dota2)
+fun PreviewGameItem() {
+    ModernAndroidTheme {
+        GameItem(Dota2)
+    }
 }
 
 

@@ -17,7 +17,7 @@ import com.dnnsgnzls.modern.presentation.ui.theme.ModernAndroidTheme
 
 @Preview(showBackground = true)
 @Composable
-fun GameListPreview() {
+fun PreviewGameList() {
     ModernAndroidTheme {
         GameList(
             Games(
@@ -29,6 +29,22 @@ fun GameListPreview() {
         )
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewEmptyGameList() {
+    ModernAndroidTheme {
+        GameList(
+            Games(
+                count = 0,
+                next = null,
+                previous = null,
+                results = listOf()
+            )
+        )
+    }
+}
+
 
 
 @Composable
