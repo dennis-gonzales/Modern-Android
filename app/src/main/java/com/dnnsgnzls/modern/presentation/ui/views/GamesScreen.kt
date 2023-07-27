@@ -1,16 +1,15 @@
 package com.dnnsgnzls.modern.presentation.ui.views
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.currentCompositionLocalContext
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.dnnsgnzls.modern.domain.model.Games
 import com.dnnsgnzls.modern.framework.utils.Response
@@ -18,7 +17,7 @@ import com.dnnsgnzls.modern.presentation.viewmodels.GamesViewModel
 
 @Composable
 fun GameListScreen(
-    navController: NavHostController,
+    navController: NavController,
     gamesViewModel: GamesViewModel,
     paddingValues: PaddingValues
 ) {
