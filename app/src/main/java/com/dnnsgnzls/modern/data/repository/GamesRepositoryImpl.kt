@@ -1,6 +1,7 @@
 package com.dnnsgnzls.modern.data.repository
 
 import com.dnnsgnzls.modern.data.db.GameEntity
+import com.dnnsgnzls.modern.domain.mapper.mapGameFromDto
 import com.dnnsgnzls.modern.domain.mapper.mapGamesFromDto
 import com.dnnsgnzls.modern.domain.model.Game
 import com.dnnsgnzls.modern.domain.model.Games
@@ -18,6 +19,19 @@ class GamesRepositoryImpl(
     private val gameDao: GameDao,
     private val dispatcher: CoroutineDispatcher
 ) : GamesRepository {
+    override fun getGame(id: Long): Flow<Response<Game>> = flow {
+        try {
+            emit(Response.Loading)
+            val gameDto = rawgApi.gameDetails(id.toString())
+            val game = mapGameFromDto(gameDto)
+
+            emit(Response.Success(game))
+        } catch (e: Exception) {
+            emit(Response.Error(e))
+            e.printStackTrace()
+        }
+    }.flowOn(dispatcher)
+
     override fun getGames(searchQuery: String, page: Int): Flow<Response<Games>> = flow {
         try {
             emit(Response.Loading)

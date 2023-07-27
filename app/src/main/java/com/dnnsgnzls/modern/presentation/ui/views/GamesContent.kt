@@ -22,7 +22,7 @@ fun PreviewSucessContent() {
     )
 
     ModernAndroidTheme {
-        GamesContent(Response.Success(games)) { /* no-op for click */ }
+        GamesContent(Response.Success(games), {}, {}) /* no-op for click */
     }
 }
 
@@ -30,7 +30,7 @@ fun PreviewSucessContent() {
 @Composable
 fun PreviewErrorContent() {
     ModernAndroidTheme {
-        GamesContent(Response.Error(Exception("Test exception for preview!"))) { /* no-op for click */ }
+        GamesContent(Response.Error(Exception("Test exception for preview!")), {}, {}) /* no-op for click */
     }
 }
 
@@ -38,14 +38,14 @@ fun PreviewErrorContent() {
 @Composable
 fun PreviewLoadingContent() {
     ModernAndroidTheme {
-        GamesContent(Response.Loading) { /* no-op for click */ }
+        GamesContent(Response.Loading, {}, {}) /* no-op for click */
     }
 }
 
 @Composable
-fun GamesContent(gamesState: Response<Games>, onItemClick: (game: Game) -> Unit) {
+fun GamesContent(gamesState: Response<Games>, onItemClick: (Long) -> Unit, onSaveGame: (Game) -> Unit) {
     when (gamesState) {
-        is Response.Success -> GameList(games = gamesState.data, onItemClick = onItemClick)
+        is Response.Success -> GameList(gamesState.data, onItemClick, onSaveGame)
         is Response.Loading -> CircularProgressIndicator()
         is Response.Error -> Text(text = "Error: ${gamesState.exception.message}")
     }

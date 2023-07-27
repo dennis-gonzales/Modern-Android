@@ -2,15 +2,20 @@ package com.dnnsgnzls.modern.presentation.ui.views
 
 import android.content.res.Configuration
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -34,13 +39,13 @@ import com.dnnsgnzls.modern.presentation.ui.theme.ModernAndroidTheme
 @Composable
 fun PreviewGameItem() {
     ModernAndroidTheme {
-        GameItem(Dota2) { /* no-op for click */ }
+        GameItem(Dota2, {}, {}) /* no-op for click */
     }
 }
 
 
 @Composable
-fun GameItem(game: Game, onClick: (game: Game) -> Unit) {
+fun GameItem(game: Game, onClick: (Long) -> Unit, onSave: (Game) -> Unit) {
     Card(
         shape = MaterialTheme.shapes.medium,
         colors = CardDefaults.cardColors(),
@@ -49,7 +54,7 @@ fun GameItem(game: Game, onClick: (game: Game) -> Unit) {
         ),
         modifier = Modifier
             .padding(top = 8.dp, start = 8.dp, end = 8.dp)
-            .clickable { onClick(game) }
+            .clickable { onClick(game.id) }
     ) {
         Row(
             modifier = Modifier
@@ -72,12 +77,32 @@ fun GameItem(game: Game, onClick: (game: Game) -> Unit) {
                 modifier = Modifier
                     .padding(start = 16.dp)
                     .align(Alignment.CenterVertically)
+                    .weight(1f)
             ) {
+                Button(
+                    onClick = { onSave(game) },
+                    modifier = Modifier.height(30.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_favourite),
+                            contentDescription = null,
+                            modifier = Modifier.padding(end = 4.dp)
+                        )
+                        Text(text = "Favourite")
+                    }
+                }
+
                 Text(
-                    text = game.name ?: "N/A",
+                    text = game.name,
                     style = MaterialTheme.typography.bodyLarge,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(top = 4.dp)
                 )
                 Text(
                     text = "Released: ${game.released}",

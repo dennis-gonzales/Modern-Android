@@ -29,8 +29,10 @@ fun PreviewGameList() {
                 next = null,
                 previous = null,
                 results = listOf(Dota2, Dota2, Dota2)
-            )
-        ) {} /* no-op for click */
+            ),
+            {},
+            {}
+        ) /* no-op for click */
     }
 }
 
@@ -44,15 +46,17 @@ fun PreviewEmptyGameList() {
                 next = null,
                 previous = null,
                 results = listOf()
-            )
-        ) {} /* no-op for click */
+            ),
+            {},
+            {}
+        ) /* no-op for click */
 
     }
 }
 
 
 @Composable
-fun GameList(games: Games, onItemClick: (game: Game) -> Unit) {
+fun GameList(games: Games, onItemClick: (Long) -> Unit, onSaveGame: (Game) -> Unit) {
     if (games.results.isEmpty()) {
         Box(
             contentAlignment = Alignment.Center,
@@ -70,7 +74,11 @@ fun GameList(games: Games, onItemClick: (game: Game) -> Unit) {
 
     LazyColumn {
         items(games.results) { game ->
-            GameItem(game, onItemClick)
+            GameItem(
+                game = game,
+                onClick = onItemClick,
+                onSave = onSaveGame
+            )
         }
         item {
             Spacer(modifier = Modifier.height(8.dp))

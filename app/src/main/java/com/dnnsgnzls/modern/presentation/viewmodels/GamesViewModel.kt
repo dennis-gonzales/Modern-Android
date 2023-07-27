@@ -1,6 +1,5 @@
 package com.dnnsgnzls.modern.presentation.viewmodels
 
-import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dnnsgnzls.modern.domain.model.Game
@@ -23,10 +22,13 @@ class GamesViewModel @Inject constructor(
     private val gamesUseCases: GamesUseCases
 ) : ViewModel() {
     private val _games = MutableStateFlow<Response<Games>>(Response.Loading)
+    private val _game = MutableStateFlow<Response<Game>>(Response.Loading)
     private val _queryText = MutableStateFlow("")
 
     val games: StateFlow<Response<Games>>
         get() = _games
+    val game: StateFlow<Response<Game>>
+        get() = _game
     val queryText: StateFlow<String>
         get() = _queryText
 
@@ -55,9 +57,17 @@ class GamesViewModel @Inject constructor(
         }
     }
 
-    fun saveFavouriteGame(game: Game) {
+    private suspend fun fetchGame(gameId: Long) {
+        gamesUseCases.getGameUseCase(gameId).collect { response ->
+            _game.value = response
+        }
+    }
+
+    fun saveFavouriteGame(game: Game) = gamesUseCases.saveGameUseCase(game)
+
+    fun fetchSingleGame(gameId: Long) {
         viewModelScope.launch {
-            gamesUseCases.saveGameUseCase(game).collect()
+            fetchGame(gameId)
         }
     }
 

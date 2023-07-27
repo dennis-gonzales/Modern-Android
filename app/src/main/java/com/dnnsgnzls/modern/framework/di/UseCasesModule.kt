@@ -1,5 +1,6 @@
 package com.dnnsgnzls.modern.framework.di
 
+import com.dnnsgnzls.modern.data.usecases.GetGameUseCaseImpl
 import com.dnnsgnzls.modern.data.usecases.GetGamesUseCaseImpl
 import com.dnnsgnzls.modern.data.usecases.SaveGameUseCaseImpl
 import com.dnnsgnzls.modern.data.usecases.SaveGamesUseCaseImpl
@@ -20,6 +21,7 @@ object UseCasesModule {
     @Provides
     fun provideGamesUseCases(gamesRepository: GamesRepository): GamesUseCases {
         return GamesUseCases(
+            GetGameUseCaseImpl(gamesRepository),
             GetGamesUseCaseImpl(gamesRepository),
             SaveGameUseCaseImpl(gamesRepository),
             SaveGamesUseCaseImpl(gamesRepository)
