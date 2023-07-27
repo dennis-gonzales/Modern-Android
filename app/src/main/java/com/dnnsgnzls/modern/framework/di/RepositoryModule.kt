@@ -24,6 +24,7 @@ object RepositoryModule {
     @Provides
     fun provideCoroutineDispatcher(): CoroutineDispatcher = Dispatchers.IO
 
+    /// <- Provides a `RawgRepository` to be used by `UseCasesModule.kt` ->
     @Singleton
     @Provides
     fun provideRawgRepository(

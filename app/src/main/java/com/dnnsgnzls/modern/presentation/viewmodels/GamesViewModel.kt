@@ -3,7 +3,8 @@ package com.dnnsgnzls.modern.presentation.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dnnsgnzls.modern.domain.model.Games
-import com.dnnsgnzls.modern.domain.repository.RawgRepository
+import com.dnnsgnzls.modern.domain.usecases.GamesUseCases
+import com.dnnsgnzls.modern.domain.usecases.GetGamesUseCase
 import com.dnnsgnzls.modern.framework.utils.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
@@ -17,7 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class GamesViewModel @Inject constructor(
-    private val repository: RawgRepository
+    private val gamesUseCases: GamesUseCases
 ) : ViewModel() {
     private val _games = MutableStateFlow<Response<Games>>(Response.Loading)
     private val _queryText = MutableStateFlow("")
@@ -47,7 +48,7 @@ class GamesViewModel @Inject constructor(
     }
 
     private suspend fun fetchGamesForQuery(searchQuery: String, page: Int) {
-        repository.getGames(searchQuery, page).collect { response ->
+        gamesUseCases.getGamesUseCase(searchQuery, page).collect { response ->
             _games.value = response
 //            when (response) {
 //                is Response.Success -> {

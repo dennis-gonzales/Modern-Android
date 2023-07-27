@@ -6,7 +6,7 @@ import com.dnnsgnzls.modern.domain.usecases.GetGamesUseCase
 import com.dnnsgnzls.modern.framework.utils.Response
 import kotlinx.coroutines.flow.Flow
 
-class GetGamesUseCaseImpl(
+class GamesUseCaseImpl(
     private val rawgRepository: RawgRepository
 ) : GetGamesUseCase {
     override operator fun invoke(searchQuery: String, page: Int): Flow<Response<Games>> {
