@@ -15,10 +15,10 @@ data class GameEntity(
 
     val name: String,
 
-    val released: String,
+    val released: String?,
 
     @ColumnInfo("background_image")
-    val backgroundImage: String,
+    val backgroundImage: String?,
 
     val rating: Double?
 ) {
