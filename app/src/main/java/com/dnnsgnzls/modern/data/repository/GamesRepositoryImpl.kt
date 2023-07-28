@@ -45,7 +45,20 @@ class GamesRepositoryImpl(
         }
     }.flowOn(dispatcher)
 
-    override fun saveGame(game: Game): Flow<Response<Boolean>> = flow<Response<Boolean>> {
+    override fun getFavouriteGameIds(): Flow<Response<List<Long>>> = flow {
+        try {
+            emit(Response.Loading)
+
+            gameDao.getAllIds().collect {
+                emit(Response.Success(it))
+            }
+        } catch (e: Exception) {
+            emit(Response.Error(e))
+            e.printStackTrace()
+        }
+    }.flowOn(dispatcher)
+
+    override fun saveGame(game: Game): Flow<Response<Boolean>> = flow {
         try {
             emit(Response.Loading)
             val gameEntity: GameEntity = GameEntity.fromDomainModel(game)
@@ -65,6 +78,18 @@ class GamesRepositoryImpl(
                 GameEntity.fromDomainModel((game))
             }
             gameDao.insertAll(gameEntityList)
+
+            emit(Response.Success(true))
+        } catch (e: Exception) {
+            emit(Response.Error(e))
+            e.printStackTrace()
+        }
+    }.flowOn(dispatcher)
+
+    override fun deleteGame(game: Game): Flow<Response<Boolean>> = flow {
+        try {
+            emit(Response.Loading)
+            gameDao.delete(GameEntity.fromDomainModel(game))
 
             emit(Response.Success(true))
         } catch (e: Exception) {

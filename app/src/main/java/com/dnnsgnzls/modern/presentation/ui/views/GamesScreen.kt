@@ -25,9 +25,12 @@ fun GameListScreen(
     snackbarHostState: SnackbarHostState,
     paddingValues: PaddingValues
 ) {
+    val favouriteGameIdsState: Response<List<Long>> by gamesViewModel.favouriteGameIds.collectAsStateWithLifecycle()
     val gamesState: Response<Games> by gamesViewModel.games.collectAsStateWithLifecycle()
     val queryTextState: String by gamesViewModel.queryText.collectAsStateWithLifecycle()
     val composableScope = rememberCoroutineScope()
+
+    gamesViewModel.getFavouriteGameIds()
 
     Column(
         modifier = Modifier
@@ -40,16 +43,25 @@ fun GameListScreen(
             onQueryTextChanged = gamesViewModel::inputQueryChanged
         )
 
+        val favGameIds = (favouriteGameIdsState as? Response.Success)?.data ?: emptyList()
+
         GamesContent(
             gamesState = gamesState,
-            onItemClick = { id -> gamesViewModel.fetchSingleGame(id) },
+            favouriteGameIds = favGameIds,
+            onItemClick = { game -> gamesViewModel.fetchSingleGame(game.id) },
             onSaveGame = { game ->
                 composableScope.launch {
-                    gamesViewModel.saveFavouriteGame(game).collect {
+                    val isFavourite = favGameIds.contains(game.id)
+
+                    gamesViewModel.saveOrDeleteGame(game, isFavourite).collect {
                         when (it) {
                             is Response.Success -> {
+                                val message =
+                                    if (isFavourite) "${game.name} is no longer your favourite."
+                                    else "${game.name} is now your favourite."
+
                                 snackbarHostState.showSnackbar(
-                                    "Game saved successfully.",
+                                    message,
                                     withDismissAction = true
                                 )
                             }

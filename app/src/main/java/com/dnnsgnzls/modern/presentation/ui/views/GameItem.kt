@@ -39,13 +39,18 @@ import com.dnnsgnzls.modern.presentation.ui.theme.ModernAndroidTheme
 @Composable
 fun PreviewGameItem() {
     ModernAndroidTheme {
-        GameItem(Dota2, {}, {}) /* no-op for click */
+        GameItem(Dota2, true, {}, {}) /* no-op for click */
     }
 }
 
 
 @Composable
-fun GameItem(game: Game, onClick: (Long) -> Unit, onSave: (Game) -> Unit) {
+fun GameItem(
+    game: Game,
+    isFavourite: Boolean,
+    onClick: (Game) -> Unit,
+    onSave: (Game) -> Unit
+) {
     Card(
         shape = MaterialTheme.shapes.medium,
         colors = CardDefaults.cardColors(),
@@ -54,7 +59,7 @@ fun GameItem(game: Game, onClick: (Long) -> Unit, onSave: (Game) -> Unit) {
         ),
         modifier = Modifier
             .padding(top = 8.dp, start = 8.dp, end = 8.dp)
-            .clickable { onClick(game.id) }
+            .clickable { onClick(game) }
     ) {
         Row(
             modifier = Modifier
@@ -86,14 +91,17 @@ fun GameItem(game: Game, onClick: (Long) -> Unit, onSave: (Game) -> Unit) {
                     Row(
                         modifier = Modifier.fillMaxSize(),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceEvenly
+                        horizontalArrangement = Arrangement.Center
                     ) {
                         Icon(
-                            painter = painterResource(R.drawable.ic_favourite),
+                            painter = painterResource(
+                                if (isFavourite) R.drawable.ic_favorite_border
+                                else R.drawable.ic_favourite
+                            ),
                             contentDescription = null,
-                            modifier = Modifier.padding(end = 4.dp)
+                            modifier = Modifier.padding(end = 8.dp)
                         )
-                        Text(text = "Favourite")
+                        Text(text = if (isFavourite) "Remove favourite" else "Favourite")
                     }
                 }
 

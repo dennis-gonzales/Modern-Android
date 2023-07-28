@@ -9,10 +9,12 @@ import com.dnnsgnzls.modern.framework.utils.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -23,12 +25,15 @@ class GamesViewModel @Inject constructor(
 ) : ViewModel() {
     private val _games = MutableStateFlow<Response<Games>>(Response.Loading)
     private val _game = MutableStateFlow<Response<Game>>(Response.Loading)
+    private val _favouriteGameIds = MutableStateFlow<Response<List<Long>>>(Response.Loading)
     private val _queryText = MutableStateFlow("")
 
     val games: StateFlow<Response<Games>>
         get() = _games
     val game: StateFlow<Response<Game>>
         get() = _game
+    val favouriteGameIds: StateFlow<Response<List<Long>>>
+        get() = _favouriteGameIds
     val queryText: StateFlow<String>
         get() = _queryText
 
@@ -64,6 +69,19 @@ class GamesViewModel @Inject constructor(
     }
 
     fun saveFavouriteGame(game: Game) = gamesUseCases.saveGameUseCase(game)
+    fun deleteFavouriteGame(game: Game) = gamesUseCases.deleteGameUseCase(game)
+    fun saveOrDeleteGame(game: Game, isFavourite: Boolean): Flow<Response<Boolean>> = flow {
+        if (isFavourite) deleteFavouriteGame(game).collect { emit(it) }
+        else saveFavouriteGame(game).collect { emit(it) }
+    }
+
+    fun getFavouriteGameIds() {
+        viewModelScope.launch {
+            gamesUseCases.getFavouriteGameIdsUseCase().collect { response ->
+                _favouriteGameIds.value = response
+            }
+        }
+    }
 
     fun fetchSingleGame(gameId: Long) {
         viewModelScope.launch {

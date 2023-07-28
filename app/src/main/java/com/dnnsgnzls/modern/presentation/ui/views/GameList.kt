@@ -30,6 +30,7 @@ fun PreviewGameList() {
                 previous = null,
                 results = listOf(Dota2, Dota2, Dota2)
             ),
+            emptyList(),
             {},
             {}
         ) /* no-op for click */
@@ -47,6 +48,7 @@ fun PreviewEmptyGameList() {
                 previous = null,
                 results = listOf()
             ),
+            emptyList(),
             {},
             {}
         ) /* no-op for click */
@@ -56,7 +58,12 @@ fun PreviewEmptyGameList() {
 
 
 @Composable
-fun GameList(games: Games, onItemClick: (Long) -> Unit, onSaveGame: (Game) -> Unit) {
+fun GameList(
+    games: Games,
+    favouriteGameIds: List<Long>,
+    onItemClick: (Game) -> Unit,
+    onSaveGame: (Game) -> Unit
+) {
     if (games.results.isEmpty()) {
         Box(
             contentAlignment = Alignment.Center,
@@ -76,6 +83,7 @@ fun GameList(games: Games, onItemClick: (Long) -> Unit, onSaveGame: (Game) -> Un
         items(games.results) { game ->
             GameItem(
                 game = game,
+                isFavourite = favouriteGameIds.contains(game.id),
                 onClick = onItemClick,
                 onSave = onSaveGame
             )

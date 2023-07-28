@@ -18,6 +18,9 @@ interface GameDao {
     @Insert
     suspend fun insertAll(heroList: List<GameEntity>)
 
+    @Query("SELECT id FROM $GAME_TABLE")
+    fun getAllIds(): Flow<List<Long>>
+
     @Query("SELECT * FROM $GAME_TABLE WHERE id=:gameId")
     fun get(gameId: Long): Flow<GameEntity?>
 

@@ -1,5 +1,7 @@
 package com.dnnsgnzls.modern.framework.di
 
+import com.dnnsgnzls.modern.data.usecases.DeleteGameUseCaseImpl
+import com.dnnsgnzls.modern.data.usecases.GetFavouriteGameIdsImpl
 import com.dnnsgnzls.modern.data.usecases.GetGameUseCaseImpl
 import com.dnnsgnzls.modern.data.usecases.GetGamesUseCaseImpl
 import com.dnnsgnzls.modern.data.usecases.SaveGameUseCaseImpl
@@ -23,8 +25,10 @@ object UseCasesModule {
         return GamesUseCases(
             GetGameUseCaseImpl(gamesRepository),
             GetGamesUseCaseImpl(gamesRepository),
+            GetFavouriteGameIdsImpl(gamesRepository),
             SaveGameUseCaseImpl(gamesRepository),
-            SaveGamesUseCaseImpl(gamesRepository)
+            SaveGamesUseCaseImpl(gamesRepository),
+            DeleteGameUseCaseImpl(gamesRepository)
         )
     }
 }
