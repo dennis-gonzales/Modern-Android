@@ -1,7 +1,10 @@
 package com.dnnsgnzls.modern.presentation.ui
 
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
@@ -19,10 +22,12 @@ import com.dnnsgnzls.modern.presentation.ui.views.StoreListScreen
 fun ModernAndroidScaffold() {
     val navHostController = rememberNavController()
     val currentRoute = navHostController.currentBackStackEntryAsState().value?.destination?.route
+    val snackbarHostState = remember { SnackbarHostState() }
     val ctx = LocalContext.current
 
     ModernAndroidTheme {
         Scaffold(
+            snackbarHost = { SnackbarHost(snackbarHostState) },
             bottomBar = {
                 BottomNavigation(
                     navController = navHostController,
@@ -37,8 +42,9 @@ fun ModernAndroidScaffold() {
                 }
                 composable(Screen.Games.route) { backStackEntry ->
                     GameListScreen(
-                        navController = navHostController,
                         gamesViewModel = hiltViewModel(),
+                        navController = navHostController,
+                        snackbarHostState = snackbarHostState,
                         paddingValues = paddingValues
                     )
                 }
