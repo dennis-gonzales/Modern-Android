@@ -1,5 +1,8 @@
 package com.dnnsgnzls.modern.presentation.ui
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -30,7 +33,11 @@ fun ModernAndroidScaffold() {
         Scaffold(
             snackbarHost = { SnackbarHost(snackbarHostState) },
             bottomBar = {
-                if (currentRoute != Screen.GameDetails.route) {
+                AnimatedVisibility (
+                    visible = currentRoute != Screen.GameDetails.route,
+                    enter = expandVertically(),
+                    exit = shrinkVertically()
+                ) {
                     BottomNavigation(
                         navController = navController,
                         currentRoute = currentRoute,

@@ -41,7 +41,7 @@ import com.dnnsgnzls.modern.presentation.ui.theme.ModernAndroidTheme
 import com.dnnsgnzls.modern.presentation.viewmodels.GamesViewModel
 
 @Composable
-fun GameDetailsScreen(
+fun GameDetailsScreen( // TODO: Decompose into smaller composable functinos
     gameId: String?,
     gamesViewModel: GamesViewModel,
     navController: NavController,
@@ -126,7 +126,7 @@ fun GameName(name: String) {
     Text(
         text = name,
         style = MaterialTheme.typography.bodyLarge,
-//        color = MaterialTheme.colors.onBackground
+        color = MaterialTheme.colorScheme.onBackground
     )
 }
 
@@ -135,7 +135,7 @@ fun GameReleaseDate(releaseDate: String) {
     Text(
         text = "Released: $releaseDate",
         style = MaterialTheme.typography.labelSmall,
-//        color = MaterialTheme.colors.onBackground
+        color = MaterialTheme.colorScheme.onBackground
     )
 }
 
@@ -145,7 +145,7 @@ fun GameRating(rating: Double?) {
         Text(
             text = "Rating: ${"%.1f".format(it)} / 5",
             style = MaterialTheme.typography.labelSmall,
-//            color = MaterialTheme.colors.onBackground
+            color = MaterialTheme.colorScheme.onBackground
         )
     }
 }
