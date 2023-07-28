@@ -6,7 +6,7 @@ import com.dnnsgnzls.modern.framework.utils.Response
 import kotlinx.coroutines.flow.Flow
 
 interface GamesRepository {
-    fun getGame(id: String): Flow<Response<Game>>
+    fun getGame(id: String, tryQueryingFromCache: Boolean): Flow<Response<Game>>
     fun getGames(searchQuery: String, page: Int): Flow<Response<Games>>
     fun getFavouriteGameIds(): Flow<Response<List<Long>>>
     fun saveGame(game: Game): Flow<Response<Boolean>>

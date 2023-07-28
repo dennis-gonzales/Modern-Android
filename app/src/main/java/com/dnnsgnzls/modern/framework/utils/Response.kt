@@ -13,6 +13,3 @@ sealed class Response<out R> {
         }
     }
 }
-
-val Response<*>.succeeded
-    get() = this is Response.Success && this.data != null

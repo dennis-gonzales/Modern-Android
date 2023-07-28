@@ -63,7 +63,7 @@ class GamesViewModel @Inject constructor(
     }
 
     suspend fun fetchSingleGame(gameId: String) {
-        gamesUseCases.getGameUseCase(gameId).collect { response ->
+        gamesUseCases.getGameUseCase(gameId, tryQueryingFromCache = true).collect { response ->
             _game.value = response
         }
     }
