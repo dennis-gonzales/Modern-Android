@@ -51,10 +51,10 @@ fun GamesContent(
     gamesState: Response<Games>,
     favouriteGameIds: List<Long>,
     onItemClick: (Game) -> Unit,
-    onSaveGame: (Game) -> Unit
+    onToggleFavourite: (Game) -> Unit
 ) {
     when (gamesState) {
-        is Response.Success -> GameList(gamesState.data, favouriteGameIds, onItemClick, onSaveGame)
+        is Response.Success -> GameList(gamesState.data, favouriteGameIds, onItemClick, onToggleFavourite)
         is Response.Loading -> CircularProgressIndicator()
         is Response.Error -> Text(text = "Error: ${gamesState.exception.message}")
     }

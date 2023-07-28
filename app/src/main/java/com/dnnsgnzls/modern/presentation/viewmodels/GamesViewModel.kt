@@ -69,17 +69,17 @@ class GamesViewModel @Inject constructor(
     }
 
     fun saveFavouriteGame(game: Game) = gamesUseCases.saveGameUseCase(game)
+
     fun deleteFavouriteGame(game: Game) = gamesUseCases.deleteGameUseCase(game)
+
     fun saveOrDeleteGame(game: Game, isFavourite: Boolean): Flow<Response<Boolean>> = flow {
         if (isFavourite) deleteFavouriteGame(game).collect { emit(it) }
         else saveFavouriteGame(game).collect { emit(it) }
     }
 
-    fun getFavouriteGameIds() {
-        viewModelScope.launch {
-            gamesUseCases.getFavouriteGameIdsUseCase().collect { response ->
-                _favouriteGameIds.value = response
-            }
+    suspend fun getFavouriteGameIds() {
+        gamesUseCases.getFavouriteGameIdsUseCase().collect { response ->
+            _favouriteGameIds.value = response
         }
     }
 

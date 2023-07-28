@@ -12,10 +12,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -49,7 +47,7 @@ fun GameItem(
     game: Game,
     isFavourite: Boolean,
     onClick: (Game) -> Unit,
-    onSave: (Game) -> Unit
+    onToggleFavourite: (Game) -> Unit
 ) {
     Card(
         shape = MaterialTheme.shapes.medium,
@@ -85,7 +83,7 @@ fun GameItem(
                     .weight(1f)
             ) {
                 Button(
-                    onClick = { onSave(game) },
+                    onClick = { onToggleFavourite(game) },
                     modifier = Modifier.height(30.dp)
                 ) {
                     Row(

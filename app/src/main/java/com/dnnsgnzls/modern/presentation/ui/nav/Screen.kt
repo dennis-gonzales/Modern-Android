@@ -12,7 +12,8 @@ sealed class Screen(
     object Stores : Screen(Destination.Stores, R.string.stores, R.drawable.ic_store)
 
     object Games : Screen(Destination.Games, R.string.games, R.drawable.ic_game)
-//    {
-//        fun createRoute(storeId: Int): String = "${Args.StoreId}/${storeId}"
-//    }
+
+    object GameDetails : Screen(Destination.GameDetails, R.string.games, R.drawable.ic_game) {
+        fun createRoute(gameId: Long): String = "game/$gameId"
+    }
 }

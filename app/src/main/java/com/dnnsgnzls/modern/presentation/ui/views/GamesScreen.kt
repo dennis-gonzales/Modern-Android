@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -15,6 +16,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.dnnsgnzls.modern.domain.model.Games
 import com.dnnsgnzls.modern.framework.utils.Response
+import com.dnnsgnzls.modern.presentation.ui.nav.Screen
 import com.dnnsgnzls.modern.presentation.viewmodels.GamesViewModel
 import kotlinx.coroutines.launch
 
@@ -30,12 +32,17 @@ fun GameListScreen(
     val queryTextState: String by gamesViewModel.queryText.collectAsStateWithLifecycle()
     val composableScope = rememberCoroutineScope()
 
-    gamesViewModel.getFavouriteGameIds()
+    LaunchedEffect(key1 = Unit) {
+        gamesViewModel.getFavouriteGameIds()
+    }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(bottom = paddingValues.calculateBottomPadding()),
+            .padding(
+                top = paddingValues.calculateTopPadding(),
+                bottom = paddingValues.calculateBottomPadding()
+            ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         GamesSearchBar(
@@ -48,8 +55,11 @@ fun GameListScreen(
         GamesContent(
             gamesState = gamesState,
             favouriteGameIds = favGameIds,
-            onItemClick = { game -> gamesViewModel.fetchSingleGame(game.id) },
-            onSaveGame = { game ->
+            onItemClick = { game ->
+//                gamesViewModel.fetchSingleGame(game.id)
+                navController.navigate(Screen.GameDetails.createRoute(game.id))
+            },
+            onToggleFavourite = { game ->
                 composableScope.launch {
                     val isFavourite = favGameIds.contains(game.id)
 

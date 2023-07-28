@@ -62,7 +62,7 @@ fun GameList(
     games: Games,
     favouriteGameIds: List<Long>,
     onItemClick: (Game) -> Unit,
-    onSaveGame: (Game) -> Unit
+    onToggleFavourite: (Game) -> Unit
 ) {
     if (games.results.isEmpty()) {
         Box(
@@ -85,7 +85,7 @@ fun GameList(
                 game = game,
                 isFavourite = favouriteGameIds.contains(game.id),
                 onClick = onItemClick,
-                onSave = onSaveGame
+                onToggleFavourite = onToggleFavourite
             )
         }
         item {
