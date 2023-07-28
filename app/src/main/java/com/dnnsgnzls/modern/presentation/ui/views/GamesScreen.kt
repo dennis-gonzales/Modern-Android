@@ -56,7 +56,6 @@ fun GameListScreen(
             gamesState = gamesState,
             favouriteGameIds = favGameIds,
             onItemClick = { game ->
-//                gamesViewModel.fetchSingleGame(game.id)
                 navController.navigate(Screen.GameDetails.createRoute(game.id))
             },
             onToggleFavourite = { game ->

@@ -11,7 +11,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.dnnsgnzls.modern.domain.mock.Dota2
 import com.dnnsgnzls.modern.presentation.ui.nav.BottomNavigation
 import com.dnnsgnzls.modern.presentation.ui.nav.Screen
 import com.dnnsgnzls.modern.presentation.ui.theme.ModernAndroidTheme
@@ -53,9 +52,15 @@ fun ModernAndroidScaffold() {
                     )
                 }
                 composable(Screen.GameDetails.route) { backStackEntry ->
-                    GameDetailsScreen(game = Dota2) {
-                        navController.popBackStack()
-                    }
+                    val gameId = backStackEntry.arguments?.getString("gameId")
+
+                    GameDetailsScreen(
+                        gameId = gameId,
+                        gamesViewModel = hiltViewModel(),
+                        navController = navController,
+                        snackbarHostState = snackbarHostState,
+                        paddingValues = paddingValues
+                    )
                 }
             }
         }

@@ -19,10 +19,10 @@ class GamesRepositoryImpl(
     private val gameDao: GameDao,
     private val dispatcher: CoroutineDispatcher
 ) : GamesRepository {
-    override fun getGame(id: Long): Flow<Response<Game>> = flow {
+    override fun getGame(id: String): Flow<Response<Game>> = flow {
         try {
             emit(Response.Loading)
-            val gameDto = rawgApi.gameDetails(id.toString())
+            val gameDto = rawgApi.gameDetails(id)
             val game = mapGameFromDto(gameDto)
 
             emit(Response.Success(game))

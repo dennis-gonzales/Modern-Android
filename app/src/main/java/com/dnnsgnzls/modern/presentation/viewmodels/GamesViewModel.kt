@@ -62,13 +62,15 @@ class GamesViewModel @Inject constructor(
         }
     }
 
-    private suspend fun fetchGame(gameId: Long) {
+    suspend fun fetchSingleGame(gameId: String) {
         gamesUseCases.getGameUseCase(gameId).collect { response ->
             _game.value = response
         }
     }
 
     fun saveFavouriteGame(game: Game) = gamesUseCases.saveGameUseCase(game)
+
+    fun saveFavouriteGames(games: List<Game>) = gamesUseCases.saveGamesUseCase(games)
 
     fun deleteFavouriteGame(game: Game) = gamesUseCases.deleteGameUseCase(game)
 
@@ -80,18 +82,6 @@ class GamesViewModel @Inject constructor(
     suspend fun getFavouriteGameIds() {
         gamesUseCases.getFavouriteGameIdsUseCase().collect { response ->
             _favouriteGameIds.value = response
-        }
-    }
-
-    fun fetchSingleGame(gameId: Long) {
-        viewModelScope.launch {
-            fetchGame(gameId)
-        }
-    }
-
-    fun saveFavouriteGames(games: List<Game>) {
-        viewModelScope.launch {
-            gamesUseCases.saveGamesUseCase(games)
         }
     }
 
