@@ -4,8 +4,17 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import com.dnnsgnzls.modern.domain.mock.Dota2
 import com.dnnsgnzls.modern.presentation.ui.theme.ModernAndroidTheme
 
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewGameRating() {
+    ModernAndroidTheme {
+        GameRating(Dota2.rating)
+    }
+}
 @Composable
 fun GameRating(rating: Double?) {
     val text =
@@ -17,12 +26,4 @@ fun GameRating(rating: Double?) {
         style = MaterialTheme.typography.labelSmall,
         color = MaterialTheme.colorScheme.onBackground
     )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewGameRating() {
-    ModernAndroidTheme {
-        GameRating(4.0)
-    }
 }

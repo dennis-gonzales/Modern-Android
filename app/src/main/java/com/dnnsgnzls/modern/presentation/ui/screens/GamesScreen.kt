@@ -55,8 +55,6 @@ fun GameListScreen(
 
         val favGameIds = (favouriteGameIdsState as? Response.Success)?.data ?: emptyList()
 
-        println("GamesScreen -> favGameIds: ${favGameIds.joinToString(separator = ", ")}")
-
         GamesView(
             gamesState = gamesState,
             favouriteGameIds = favGameIds,

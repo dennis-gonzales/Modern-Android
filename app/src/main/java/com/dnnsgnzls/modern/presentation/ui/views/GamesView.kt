@@ -14,7 +14,7 @@ import java.lang.Exception
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewSuccessContent() {
+fun PreviewGamesSuccessContent() {
     val games = Games(
         count = 1,
         next = null,
@@ -29,7 +29,7 @@ fun PreviewSuccessContent() {
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewErrorContent() {
+fun PreviewGamesErrorContent() {
     ModernAndroidTheme {
         GamesView(
             Response.Error(Exception("Test exception for preview!")),
@@ -41,7 +41,7 @@ fun PreviewErrorContent() {
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewLoadingContent() {
+fun PreviewGamesLoadingContent() {
     ModernAndroidTheme {
         GamesView(Response.Loading, emptyList(), {}, {}) /* no-op for click */
     }

@@ -16,8 +16,19 @@ import coil.compose.rememberAsyncImagePainter
 import com.dnnsgnzls.modern.R
 import com.dnnsgnzls.modern.presentation.ui.theme.ModernAndroidTheme
 
+@Preview(showBackground = true)
 @Composable
-fun GameBackgroundImage(url: String, placeholder: Painter? = null) {
+fun PreviewGameBackgroundImage() {
+    ModernAndroidTheme {
+        GameBackgroundImage("N/A")
+    }
+}
+
+@Composable
+fun GameBackgroundImage(
+    url: String,
+    placeholder: Painter = painterResource(R.drawable.ic_game)
+) {
     val image: Painter = rememberAsyncImagePainter(
         model = url,
         placeholder = placeholder
@@ -32,12 +43,4 @@ fun GameBackgroundImage(url: String, placeholder: Painter? = null) {
             .clip(RoundedCornerShape(8.dp)),
         contentScale = ContentScale.Crop,
     )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewGameBackgroundImage() {
-    ModernAndroidTheme {
-        GameBackgroundImage("N/A", painterResource(R.drawable.ic_game))
-    }
 }
