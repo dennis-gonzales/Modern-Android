@@ -19,7 +19,7 @@ import com.dnnsgnzls.modern.presentation.ui.nav.Screen
 import com.dnnsgnzls.modern.presentation.ui.theme.ModernAndroidTheme
 import com.dnnsgnzls.modern.presentation.ui.views.GameDetailsScreen
 import com.dnnsgnzls.modern.presentation.ui.views.GameListScreen
-import com.dnnsgnzls.modern.presentation.ui.views.StoreListScreen
+import com.dnnsgnzls.modern.presentation.ui.views.FavouritesScreen
 
 
 @Composable
@@ -41,16 +41,13 @@ fun ModernAndroidScaffold() {
                     BottomNavigation(
                         navController = navController,
                         currentRoute = currentRoute,
-                        items = listOf(Screen.Games, Screen.Stores)
+                        items = listOf(Screen.Games, Screen.Favourites)
                     )
                 }
             }
         ) { paddingValues ->
             NavHost(navController = navController, startDestination = Screen.Games.route) {
-                composable(Screen.Stores.route) {
-                    StoreListScreen()
-                }
-                composable(Screen.Games.route) { backStackEntry ->
+                composable(Screen.Games.route) {
                     GameListScreen(
                         gamesViewModel = hiltViewModel(),
                         navController = navController,
@@ -68,6 +65,9 @@ fun ModernAndroidScaffold() {
                         snackbarHostState = snackbarHostState,
                         paddingValues = paddingValues
                     )
+                }
+                composable(Screen.Favourites.route) {backStackEntry ->
+                    FavouritesScreen()
                 }
             }
         }

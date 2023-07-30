@@ -9,11 +9,12 @@ sealed class Screen(
     @StringRes val stringResourceId: Int,
     @DrawableRes val drawableResourceId: Int
 ) {
-    object Stores : Screen(Destination.Stores, R.string.stores, R.drawable.ic_store)
 
     object Games : Screen(Destination.Games, R.string.games, R.drawable.ic_game)
 
     object GameDetails : Screen(Destination.GameDetails, R.string.games, R.drawable.ic_game) {
         fun createRoute(gameId: Long): String = "game/$gameId"
     }
+
+    object Favourites : Screen(Destination.Favourites, R.string.favourites, R.drawable.ic_favourite)
 }
