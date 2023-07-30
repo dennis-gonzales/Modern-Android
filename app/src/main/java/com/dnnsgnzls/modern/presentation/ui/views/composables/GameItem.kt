@@ -1,18 +1,14 @@
-package com.dnnsgnzls.modern.presentation.ui.views
+package com.dnnsgnzls.modern.presentation.ui.views.composables
 
 import android.content.res.Configuration
-import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -25,7 +21,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -84,48 +79,8 @@ fun GameItem(
                     .align(Alignment.CenterVertically)
                     .weight(1f)
             ) {
-                Button(
-                    onClick = { onToggleFavourite(game) },
-                    modifier = Modifier.height(30.dp)
-                ) {
-                    Crossfade(
-                        targetState = isFavourite,
-                        label = "Toggle Favourite Game"
-                    ) { isFavourite ->
-                        Row(
-                            modifier = Modifier.fillMaxSize(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center
-                        ) {
-                            when {
-                                isFavourite -> {
-                                    Icon(
-                                        painter = painterResource(R.drawable.ic_favourite),
-                                        contentDescription = null,
-                                        modifier = Modifier.padding(end = 8.dp)
-                                    )
-                                    Text(
-                                        text = "My Favourite",
-                                        fontWeight = FontWeight.ExtraBold,
-                                        style = MaterialTheme.typography.labelSmall,
-                                    )
-                                }
-
-                                else -> {
-                                    Icon(
-                                        painter = painterResource(R.drawable.ic_favourite_border),
-                                        contentDescription = null,
-                                        modifier = Modifier.padding(end = 8.dp)
-                                    )
-                                    Text(
-                                        text = "Set Favourite",
-                                        fontWeight = FontWeight.Normal,
-                                        style = MaterialTheme.typography.labelSmall,
-                                    )
-                                }
-                            }
-                        }
-                    }
+                FavouriteGameButton(isFavourite) {
+                    onToggleFavourite(game)
                 }
 
                 Text(

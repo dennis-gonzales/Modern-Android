@@ -1,4 +1,4 @@
-package com.dnnsgnzls.modern.presentation.ui.views
+package com.dnnsgnzls.modern.presentation.ui.views.composables
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding

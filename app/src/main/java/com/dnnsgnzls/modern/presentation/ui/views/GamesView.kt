@@ -9,11 +9,12 @@ import com.dnnsgnzls.modern.domain.model.Game
 import com.dnnsgnzls.modern.domain.model.Games
 import com.dnnsgnzls.modern.framework.utils.Response
 import com.dnnsgnzls.modern.presentation.ui.theme.ModernAndroidTheme
+import com.dnnsgnzls.modern.presentation.ui.views.composables.GameList
 import java.lang.Exception
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewSucessContent() {
+fun PreviewSuccessContent() {
     val games = Games(
         count = 1,
         next = null,
@@ -22,7 +23,7 @@ fun PreviewSucessContent() {
     )
 
     ModernAndroidTheme {
-        GamesContent(Response.Success(games), emptyList(), {}, {}) /* no-op for click */
+        GamesView(Response.Success(games), emptyList(), {}, {}) /* no-op for click */
     }
 }
 
@@ -30,7 +31,7 @@ fun PreviewSucessContent() {
 @Composable
 fun PreviewErrorContent() {
     ModernAndroidTheme {
-        GamesContent(
+        GamesView(
             Response.Error(Exception("Test exception for preview!")),
             emptyList(),
             {},
@@ -42,12 +43,12 @@ fun PreviewErrorContent() {
 @Composable
 fun PreviewLoadingContent() {
     ModernAndroidTheme {
-        GamesContent(Response.Loading, emptyList(), {}, {}) /* no-op for click */
+        GamesView(Response.Loading, emptyList(), {}, {}) /* no-op for click */
     }
 }
 
 @Composable
-fun GamesContent(
+fun GamesView(
     gamesState: Response<Games>,
     favouriteGameIds: List<Long>,
     onItemClick: (Game) -> Unit,

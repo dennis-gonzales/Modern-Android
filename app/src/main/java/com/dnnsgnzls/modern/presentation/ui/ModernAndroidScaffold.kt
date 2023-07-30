@@ -17,13 +17,15 @@ import androidx.navigation.compose.rememberNavController
 import com.dnnsgnzls.modern.presentation.ui.nav.BottomNavigation
 import com.dnnsgnzls.modern.presentation.ui.nav.Screen
 import com.dnnsgnzls.modern.presentation.ui.theme.ModernAndroidTheme
-import com.dnnsgnzls.modern.presentation.ui.views.GameDetailsScreen
-import com.dnnsgnzls.modern.presentation.ui.views.GameListScreen
-import com.dnnsgnzls.modern.presentation.ui.views.FavouritesScreen
+import com.dnnsgnzls.modern.presentation.ui.screens.GameDetailsScreen
+import com.dnnsgnzls.modern.presentation.ui.screens.GameListScreen
+import com.dnnsgnzls.modern.presentation.ui.screens.FavouritesScreen
+import com.dnnsgnzls.modern.presentation.viewmodels.GamesViewModel
 
 
 @Composable
 fun ModernAndroidScaffold() {
+    val gamesViewModel: GamesViewModel = hiltViewModel()
     val navController = rememberNavController()
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
     val snackbarHostState = remember { SnackbarHostState() }
@@ -49,9 +51,9 @@ fun ModernAndroidScaffold() {
             NavHost(navController = navController, startDestination = Screen.Games.route) {
                 composable(Screen.Games.route) {
                     GameListScreen(
-                        gamesViewModel = hiltViewModel(),
+                        gamesViewModel = gamesViewModel,
                         navController = navController,
-                        snackbarHostState = snackbarHostState,
+                        snackBarHostState = snackbarHostState,
                         paddingValues = paddingValues
                     )
                 }
@@ -60,9 +62,9 @@ fun ModernAndroidScaffold() {
 
                     GameDetailsScreen(
                         gameId = gameId,
-                        gamesViewModel = hiltViewModel(),
+                        gamesViewModel = gamesViewModel,
                         navController = navController,
-                        snackbarHostState = snackbarHostState,
+                        snackBarHostState = snackbarHostState,
                         paddingValues = paddingValues
                     )
                 }

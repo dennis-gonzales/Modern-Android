@@ -1,4 +1,4 @@
-package com.dnnsgnzls.modern.presentation.ui.views
+package com.dnnsgnzls.modern.presentation.ui.screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -8,6 +8,7 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -17,6 +18,8 @@ import androidx.navigation.NavController
 import com.dnnsgnzls.modern.domain.model.Games
 import com.dnnsgnzls.modern.framework.utils.Response
 import com.dnnsgnzls.modern.presentation.ui.nav.Screen
+import com.dnnsgnzls.modern.presentation.ui.views.GamesView
+import com.dnnsgnzls.modern.presentation.ui.views.composables.GamesSearchBar
 import com.dnnsgnzls.modern.presentation.viewmodels.GamesViewModel
 import kotlinx.coroutines.launch
 
@@ -24,7 +27,7 @@ import kotlinx.coroutines.launch
 fun GameListScreen(
     gamesViewModel: GamesViewModel,
     navController: NavController,
-    snackbarHostState: SnackbarHostState,
+    snackBarHostState: SnackbarHostState,
     paddingValues: PaddingValues
 ) {
     val favouriteGameIdsState: Response<List<Long>> by gamesViewModel.favouriteGameIds.collectAsStateWithLifecycle()
@@ -32,7 +35,7 @@ fun GameListScreen(
     val queryTextState: String by gamesViewModel.queryText.collectAsStateWithLifecycle()
     val composableScope = rememberCoroutineScope()
 
-    LaunchedEffect(key1 = Unit) {
+    LaunchedEffect(Unit) {
         gamesViewModel.getFavouriteGameIds()
     }
 
@@ -52,7 +55,9 @@ fun GameListScreen(
 
         val favGameIds = (favouriteGameIdsState as? Response.Success)?.data ?: emptyList()
 
-        GamesContent(
+        println("GamesScreen -> favGameIds: ${favGameIds.joinToString(separator = ", ")}")
+
+        GamesView(
             gamesState = gamesState,
             favouriteGameIds = favGameIds,
             onItemClick = { game ->
@@ -69,14 +74,14 @@ fun GameListScreen(
                                     if (isFavourite) "${game.name} is no longer your favourite."
                                     else "${game.name} is now your favourite."
 
-                                snackbarHostState.showSnackbar(
+                                snackBarHostState.showSnackbar(
                                     message,
                                     withDismissAction = true
                                 )
                             }
 
                             is Response.Error -> {
-                                snackbarHostState.showSnackbar(
+                                snackBarHostState.showSnackbar(
                                     it.exception.message ?: "Unknown error",
                                     withDismissAction = true,
                                     duration = SnackbarDuration.Indefinite
