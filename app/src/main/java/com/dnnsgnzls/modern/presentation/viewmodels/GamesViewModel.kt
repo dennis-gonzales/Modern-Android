@@ -6,11 +6,12 @@ import com.dnnsgnzls.modern.domain.model.Game
 import com.dnnsgnzls.modern.domain.model.Games
 import com.dnnsgnzls.modern.domain.usecases.GamesUseCases
 import com.dnnsgnzls.modern.framework.utils.Response
-import com.dnnsgnzls.modern.framework.utils.UIEvent
+import com.dnnsgnzls.modern.framework.utils.SnackbarMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.debounce
@@ -27,8 +28,7 @@ class GamesViewModel @Inject constructor(
     private val _game = MutableStateFlow<Response<Game>>(Response.Loading)
     private val _favouriteGameIds = MutableStateFlow<Response<List<Long>>>(Response.Loading)
     private val _queryText = MutableStateFlow("")
-    private val _uiEventChannel = Channel<UIEvent>(Channel.BUFFERED)
-    private val queryInput = Channel<String>(Channel.CONFLATED)
+    private val queryTextChannel = Channel<String>(Channel.CONFLATED)
 
     val games: StateFlow<Response<Games>>
         get() = _games
@@ -38,8 +38,8 @@ class GamesViewModel @Inject constructor(
         get() = _favouriteGameIds
     val queryText: StateFlow<String>
         get() = _queryText
-    val uiEvent: Flow<UIEvent>
-        get() = _uiEventChannel.receiveAsFlow()
+
+    val snackBarMessages = MutableSharedFlow<SnackbarMessage>()
 
 
     init {
@@ -51,7 +51,7 @@ class GamesViewModel @Inject constructor(
         viewModelScope.launch {
             fetchGamesForQuery("", 1)
 
-            queryInput.receiveAsFlow()
+            queryTextChannel.receiveAsFlow()
                 .debounce(500)
                 .collect { searchQuery ->
                     fetchGamesForQuery(searchQuery, 1)
@@ -71,15 +71,28 @@ class GamesViewModel @Inject constructor(
         }
     }
 
-    fun saveFavouriteGame(game: Game) = gamesUseCases.saveGameUseCase(game)
+    suspend fun saveOrDeleteGameWithMessage(game: Game, isFavourite: Boolean) {
+        saveOrDeleteGame(game, isFavourite).collect { response ->
+            when (response) {
+                is Response.Success -> {
+                    val message = if (isFavourite) "${game.name} is no longer your favourite."
+                    else "${game.name} is now your favourite."
 
-    fun saveFavouriteGames(games: List<Game>) = gamesUseCases.saveGamesUseCase(games)
+                    snackBarMessages.emit(SnackbarMessage.Success(message))
+                }
 
-    fun deleteFavouriteGame(game: Game) = gamesUseCases.deleteGameUseCase(game)
+                is Response.Error -> {
+                    snackBarMessages.emit(SnackbarMessage.Error(response.exception.message ?: "Unknown error"))
+                }
 
-    fun saveOrDeleteGame(game: Game, isFavourite: Boolean): Flow<Response<Boolean>> = flow {
-        if (isFavourite) deleteFavouriteGame(game).collect { emit(it) }
-        else saveFavouriteGame(game).collect { emit(it) }
+                is Response.Loading -> {} // ignore
+            }
+        }
+    }
+
+    private fun saveOrDeleteGame(game: Game, isFavourite: Boolean): Flow<Response<Boolean>> = flow {
+        if (isFavourite) gamesUseCases.deleteGameUseCase(game).collect { emit(it) }
+        else gamesUseCases.saveGameUseCase(game).collect { emit(it) }
     }
 
     suspend fun getFavouriteGameIds() {
@@ -90,6 +103,6 @@ class GamesViewModel @Inject constructor(
 
     fun inputQueryChanged(input: String) {
         _queryText.value = input
-        queryInput.trySend(input)
+        queryTextChannel.trySend(input)
     }
 }

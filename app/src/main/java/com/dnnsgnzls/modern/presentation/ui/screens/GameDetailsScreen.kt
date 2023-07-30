@@ -12,7 +12,9 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,6 +23,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.dnnsgnzls.modern.domain.model.Game
 import com.dnnsgnzls.modern.framework.utils.Response
+import com.dnnsgnzls.modern.framework.utils.SnackbarMessage
 import com.dnnsgnzls.modern.presentation.ui.views.GameDetailsView
 import com.dnnsgnzls.modern.presentation.viewmodels.GamesViewModel
 import kotlinx.coroutines.launch
@@ -49,12 +52,39 @@ fun GameDetailsScreen(
         return
     }
 
+    val favGameIds by remember {
+        derivedStateOf {
+            (favouriteGameIdsState as? Response.Success)?.data ?: emptyList()
+        }
+    }
+
     LaunchedEffect(Unit) {
         gamesViewModel.getFavouriteGameIds()
     }
 
     LaunchedEffect(gameId) {
         gamesViewModel.fetchSingleGame(gameId)
+    }
+
+    LaunchedEffect(gamesViewModel.snackBarMessages) {
+        gamesViewModel.snackBarMessages.collect { message ->
+            when (message) {
+                is SnackbarMessage.Success -> {
+                    snackBarHostState.showSnackbar(
+                        message.message,
+                        withDismissAction = true
+                    )
+                }
+
+                is SnackbarMessage.Error -> {
+                    snackBarHostState.showSnackbar(
+                        message.message,
+                        withDismissAction = true,
+                        duration = SnackbarDuration.Indefinite
+                    )
+                }
+            }
+        }
     }
 
     Column(
@@ -67,7 +97,6 @@ fun GameDetailsScreen(
                 bottom = paddingValues.calculateBottomPadding()
             ),
     ) {
-        val favGameIds = (favouriteGameIdsState as? Response.Success)?.data ?: emptyList()
         val isFavourite = favGameIds.contains((gameState as? Response.Success)?.data?.id)
 
         GameDetailsView(
@@ -76,30 +105,7 @@ fun GameDetailsScreen(
             onBack = { navController.popBackStack() },
             onToggleFavourite = { game ->
                 composableScope.launch {
-                    gamesViewModel.saveOrDeleteGame(game, isFavourite).collect {
-                        when (it) {
-                            is Response.Success -> {
-                                val message =
-                                    if (isFavourite) "${game.name} is no longer your favourite."
-                                    else "${game.name} is now your favourite."
-
-                                snackBarHostState.showSnackbar(
-                                    message,
-                                    withDismissAction = true
-                                )
-                            }
-
-                            is Response.Error -> {
-                                snackBarHostState.showSnackbar(
-                                    it.exception.message ?: "Unknown error",
-                                    withDismissAction = true,
-                                    duration = SnackbarDuration.Indefinite
-                                )
-                            }
-
-                            is Response.Loading -> {} // ignore
-                        }
-                    }
+                    gamesViewModel.saveOrDeleteGameWithMessage(game, isFavourite)
                 }
             }
         )

@@ -8,8 +8,9 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,6 +18,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.dnnsgnzls.modern.domain.model.Games
 import com.dnnsgnzls.modern.framework.utils.Response
+import com.dnnsgnzls.modern.framework.utils.SnackbarMessage
 import com.dnnsgnzls.modern.presentation.ui.nav.Screen
 import com.dnnsgnzls.modern.presentation.ui.views.GamesView
 import com.dnnsgnzls.modern.presentation.ui.views.composables.GamesSearchBar
@@ -35,8 +37,35 @@ fun GameListScreen(
     val queryTextState: String by gamesViewModel.queryText.collectAsStateWithLifecycle()
     val composableScope = rememberCoroutineScope()
 
+    val favGameIds by remember {
+        derivedStateOf {
+            (favouriteGameIdsState as? Response.Success)?.data ?: emptyList()
+        }
+    }
+
     LaunchedEffect(Unit) {
         gamesViewModel.getFavouriteGameIds()
+    }
+
+    LaunchedEffect(gamesViewModel.snackBarMessages) {
+        gamesViewModel.snackBarMessages.collect { message ->
+            when (message) {
+                is SnackbarMessage.Success -> {
+                    snackBarHostState.showSnackbar(
+                        message.message,
+                        withDismissAction = true
+                    )
+                }
+
+                is SnackbarMessage.Error -> {
+                    snackBarHostState.showSnackbar(
+                        message.message,
+                        withDismissAction = true,
+                        duration = SnackbarDuration.Indefinite
+                    )
+                }
+            }
+        }
     }
 
     Column(
@@ -53,8 +82,6 @@ fun GameListScreen(
             onQueryTextChanged = gamesViewModel::inputQueryChanged
         )
 
-        val favGameIds = (favouriteGameIdsState as? Response.Success)?.data ?: emptyList()
-
         GamesView(
             gamesState = gamesState,
             favouriteGameIds = favGameIds,
@@ -64,31 +91,7 @@ fun GameListScreen(
             onToggleFavourite = { game ->
                 composableScope.launch {
                     val isFavourite = favGameIds.contains(game.id)
-
-                    gamesViewModel.saveOrDeleteGame(game, isFavourite).collect {
-                        when (it) {
-                            is Response.Success -> {
-                                val message =
-                                    if (isFavourite) "${game.name} is no longer your favourite."
-                                    else "${game.name} is now your favourite."
-
-                                snackBarHostState.showSnackbar(
-                                    message,
-                                    withDismissAction = true
-                                )
-                            }
-
-                            is Response.Error -> {
-                                snackBarHostState.showSnackbar(
-                                    it.exception.message ?: "Unknown error",
-                                    withDismissAction = true,
-                                    duration = SnackbarDuration.Indefinite
-                                )
-                            }
-
-                            is Response.Loading -> {} // ignore
-                        }
-                    }
+                    gamesViewModel.saveOrDeleteGameWithMessage(game, isFavourite)
                 }
             }
         )
