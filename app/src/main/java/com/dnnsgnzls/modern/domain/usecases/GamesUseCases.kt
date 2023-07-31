@@ -11,5 +11,4 @@ class GamesUseCases(
     val deleteGameUseCase: DeleteGameUseCase,
     val deleteGameReviewUseCase: DeleteGameReviewUseCase,
     val deleteGamesReviewsByGameIdUseCase: DeleteGameReviewsByGameIdUseCase
-
 )

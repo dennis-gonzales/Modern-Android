@@ -1,7 +1,7 @@
 package com.dnnsgnzls.modern.domain.mapper
 
-import com.dnnsgnzls.modern.data.api.games.GameDto
-import com.dnnsgnzls.modern.data.api.games.GamesDto
+import com.dnnsgnzls.modern.data.api.GameDto
+import com.dnnsgnzls.modern.data.api.GamesDto
 import com.dnnsgnzls.modern.domain.model.Game
 import com.dnnsgnzls.modern.domain.model.Games
 

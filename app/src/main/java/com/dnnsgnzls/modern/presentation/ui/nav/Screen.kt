@@ -17,4 +17,7 @@ sealed class Screen(
     }
 
     object Favourites : Screen(Destination.Favourites, R.string.favourites, R.drawable.ic_favourite)
+
+    object BusinessCardScreen :
+        Screen(Destination.BusinessCard, R.string.profile, R.drawable.ic_account)
 }

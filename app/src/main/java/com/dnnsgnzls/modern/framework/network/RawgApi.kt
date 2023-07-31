@@ -1,7 +1,7 @@
 package com.dnnsgnzls.modern.framework.network
 
-import com.dnnsgnzls.modern.data.api.games.GameDto
-import com.dnnsgnzls.modern.data.api.games.GamesDto
+import com.dnnsgnzls.modern.data.api.GameDto
+import com.dnnsgnzls.modern.data.api.GamesDto
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
