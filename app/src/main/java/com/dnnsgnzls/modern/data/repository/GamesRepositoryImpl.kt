@@ -93,4 +93,18 @@ class GamesRepositoryImpl(
 
         emit(Response.Success(true))
     }.catchException().flowOn(dispatcher)
+
+    override fun deleteReview(review: Review): Flow<Response<Boolean>> = flow {
+        emit(Response.Loading)
+        reviewDao.delete(ReviewEntity.fromDomainModel(review))
+
+        emit(Response.Success(true))
+    }.catchException().flowOn(dispatcher)
+
+    override fun deleteAllReviewsByGameIs(gameId: Long): Flow<Response<Boolean>> = flow {
+        emit(Response.Loading)
+        reviewDao.deleteAllByGameId(gameId)
+
+        emit(Response.Success(true))
+    }.catchException().flowOn(dispatcher)
 }

@@ -14,4 +14,6 @@ interface GamesRepository {
     fun saveGame(game: Game): Flow<Response<Boolean>>
     fun saveGameReview(review: Review): Flow<Response<Boolean>>
     fun deleteGame(game: Game): Flow<Response<Boolean>>
+    fun deleteReview(review: Review): Flow<Response<Boolean>>
+    fun deleteAllReviewsByGameIs(gameId: Long): Flow<Response<Boolean>>
 }

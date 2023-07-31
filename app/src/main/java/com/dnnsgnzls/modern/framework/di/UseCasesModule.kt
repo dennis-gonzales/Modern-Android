@@ -1,13 +1,15 @@
 package com.dnnsgnzls.modern.framework.di
 
+import com.dnnsgnzls.modern.data.usecases.DeleteGameReviewUseCaseImpl
+import com.dnnsgnzls.modern.data.usecases.DeleteGameReviewsByGameIdUseCaseImpl
 import com.dnnsgnzls.modern.data.usecases.DeleteGameUseCaseImpl
 import com.dnnsgnzls.modern.data.usecases.GetFavouriteGameIdsImpl
 import com.dnnsgnzls.modern.data.usecases.GetFavouriteGamesUseCaseImpl
-import com.dnnsgnzls.modern.data.usecases.GetGameReviewsUseCaseimpl
+import com.dnnsgnzls.modern.data.usecases.GetGameReviewsByGameIdUseCaseimpl
 import com.dnnsgnzls.modern.data.usecases.GetGameUseCaseImpl
 import com.dnnsgnzls.modern.data.usecases.GetGamesUseCaseImpl
-import com.dnnsgnzls.modern.data.usecases.SaveGameUseCaseImpl
 import com.dnnsgnzls.modern.data.usecases.SaveGameReviewUseCaseImpl
+import com.dnnsgnzls.modern.data.usecases.SaveGameUseCaseImpl
 import com.dnnsgnzls.modern.domain.repository.GamesRepository
 import com.dnnsgnzls.modern.domain.usecases.GamesUseCases
 import dagger.Module
@@ -29,10 +31,12 @@ object UseCasesModule {
             GetGamesUseCaseImpl(gamesRepository),
             GetFavouriteGamesUseCaseImpl(gamesRepository),
             GetFavouriteGameIdsImpl(gamesRepository),
-            GetGameReviewsUseCaseimpl(gamesRepository),
+            GetGameReviewsByGameIdUseCaseimpl(gamesRepository),
             SaveGameUseCaseImpl(gamesRepository),
             SaveGameReviewUseCaseImpl(gamesRepository),
-            DeleteGameUseCaseImpl(gamesRepository)
+            DeleteGameUseCaseImpl(gamesRepository),
+            DeleteGameReviewUseCaseImpl(gamesRepository),
+            DeleteGameReviewsByGameIdUseCaseImpl(gamesRepository)
         )
     }
 }

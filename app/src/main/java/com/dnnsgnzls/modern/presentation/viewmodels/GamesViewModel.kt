@@ -81,14 +81,18 @@ class GamesViewModel @Inject constructor(
         saveOrDeleteGame(game, isFavourite).collect { response ->
             when (response) {
                 is Response.Success -> {
-                    val message = if (isFavourite) "${game.name} is no longer your favourite."
-                    else "${game.name} is now your favourite."
+                    val message = if (isFavourite) "\"${game.name}\" is no longer your favourite."
+                    else "\"${game.name}\" is now your favourite."
 
                     snackBarMessages.emit(SnackbarMessage.Success(message))
                 }
 
                 is Response.Error -> {
-                    snackBarMessages.emit(SnackbarMessage.Error(response.exception.message ?: "Unknown error"))
+                    snackBarMessages.emit(
+                        SnackbarMessage.Error(
+                            response.exception.message ?: "Unknown error"
+                        )
+                    )
                 }
 
                 is Response.Loading -> {} // ignore
@@ -97,8 +101,10 @@ class GamesViewModel @Inject constructor(
     }
 
     private fun saveOrDeleteGame(game: Game, isFavourite: Boolean): Flow<Response<Boolean>> = flow {
-        if (isFavourite) gamesUseCases.deleteGameUseCase(game).collect { emit(it) }
-        else gamesUseCases.saveGameUseCase(game).collect { emit(it) }
+        if (isFavourite) {
+            gamesUseCases.deleteGameUseCase(game).collect { emit(it) }
+            deleteAllReviewsByGameId(game)
+        } else gamesUseCases.saveGameUseCase(game).collect { emit(it) }
     }
 
     suspend fun getFavouriteGames() {
@@ -114,15 +120,40 @@ class GamesViewModel @Inject constructor(
     }
 
     suspend fun saveGameReview(review: Review) {
-        gamesUseCases.saveGameReviewUseCase(review).collect {response ->
+        gamesUseCases.saveGameReviewUseCase(review).collect { response ->
             when (response) {
                 is Response.Success -> {
-                    val message = "${review.title} saved successfully."
+                    val message = "\"${review.title}\" saved successfully."
                     snackBarMessages.emit(SnackbarMessage.Success(message))
                 }
 
                 is Response.Error -> {
-                    snackBarMessages.emit(SnackbarMessage.Error(response.exception.message ?: "Unknown error"))
+                    snackBarMessages.emit(
+                        SnackbarMessage.Error(
+                            response.exception.message ?: "Unknown error"
+                        )
+                    )
+                }
+
+                is Response.Loading -> {} // ignore
+            }
+        }
+    }
+
+    suspend fun deleteGameReview(review: Review) {
+        gamesUseCases.deleteGameReviewUseCase(review).collect { response ->
+            when (response) {
+                is Response.Success -> {
+                    val message = "\"${review.title}\" deleted successfully."
+                    snackBarMessages.emit(SnackbarMessage.Success(message))
+                }
+
+                is Response.Error -> {
+                    snackBarMessages.emit(
+                        SnackbarMessage.Error(
+                            response.exception.message ?: "Unknown error"
+                        )
+                    )
                 }
 
                 is Response.Loading -> {} // ignore
@@ -131,8 +162,26 @@ class GamesViewModel @Inject constructor(
     }
 
     suspend fun getReviewsByGameId(gameId: Long) {
-        gamesUseCases.getGameReviewsUseCase(gameId).collect {reviewList ->
+        gamesUseCases.getGameReviewsByGameIdUseCase(gameId).collect { reviewList ->
             _gameReviews.value = reviewList
+        }
+    }
+
+    private suspend fun deleteAllReviewsByGameId(game: Game) {
+        gamesUseCases.deleteGamesReviewsByGameIdUseCase(game.id).collect { response ->
+            when (response) {
+                is Response.Success -> {} // ignore
+
+                is Response.Error -> {
+                    snackBarMessages.emit(
+                        SnackbarMessage.Error(
+                            response.exception.message ?: "Unknown error"
+                        )
+                    )
+                }
+
+                is Response.Loading -> {} // ignore
+            }
         }
     }
 

@@ -68,7 +68,7 @@ fun GameDetailsScreen(
         gamesViewModel.fetchSingleGame(gameId)
     }
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(gameId) {
         gamesViewModel.getReviewsByGameId(gameId.toLong())
     }
 
@@ -113,6 +113,11 @@ fun GameDetailsScreen(
             onToggleFavourite = { game ->
                 composableScope.launch {
                     gamesViewModel.saveOrDeleteGameWithMessage(game, isFavourite)
+                }
+            },
+            onDeleteReview = { review ->
+                composableScope.launch {
+                    gamesViewModel.deleteGameReview(review)
                 }
             }
         )

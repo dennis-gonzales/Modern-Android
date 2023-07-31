@@ -34,8 +34,9 @@ fun PreviewGameDetailsSuccessContent() {
                 listOf(Review(-1, "Test Review", "Review Details"))
             ),
             isFavourite = true,
-            onBack = { }, /* no-op for click */
-            onToggleFavourite = { } /* no-op for click */
+            onBack = {}, /* no-op for click */
+            onToggleFavourite = {}, /* no-op for click */
+            onDeleteReview = {}  /* no-op for click */
         )
     }
 }
@@ -48,8 +49,9 @@ fun PreviewGameDetailsErrorContent() {
             Response.Error(Exception("Test exception for preview!")),
             Response.Error(Exception("Test exception for preview!")),
             isFavourite = true,
-            onBack = { }, /* no-op for click */
-            onToggleFavourite = { } /* no-op for click */
+            onBack = {}, /* no-op for click */
+            onToggleFavourite = {}, /* no-op for click */
+            onDeleteReview = {}  /* no-op for click */
         )
     }
 }
@@ -62,8 +64,9 @@ fun PreviewGameDetailsLoadingContent() {
             gameState = Response.Loading,
             reviewsState = Response.Loading,
             isFavourite = true,
-            onBack = { }, /* no-op for click */
-            onToggleFavourite = { } /* no-op for click */
+            onBack = {}, /* no-op for click */
+            onToggleFavourite = {}, /* no-op for click */
+            onDeleteReview = {}  /* no-op for click */
         )
     }
 }
@@ -75,6 +78,7 @@ fun GameDetailsView(
     isFavourite: Boolean,
     onBack: () -> Unit,
     onToggleFavourite: (Game) -> Unit,
+    onDeleteReview: (Review) -> Unit,
 ) {
     when (gameState) {
         is Response.Success -> {
@@ -99,7 +103,11 @@ fun GameDetailsView(
 
                 GameInfo(game = gameState.data, modifier = Modifier.padding(16.dp))
 
-                ReviewsView(reviewsState, modifier = Modifier.padding(16.dp))
+                ReviewsView(
+                    reviewsState,
+                    modifier = Modifier.padding(16.dp),
+                    onDeleteReview = onDeleteReview
+                )
             }
         }
 

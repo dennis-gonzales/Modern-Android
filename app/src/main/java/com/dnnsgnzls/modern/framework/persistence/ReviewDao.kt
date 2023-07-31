@@ -32,4 +32,7 @@ interface ReviewDao {
 
     @Delete
     suspend fun delete(reviewEntity: ReviewEntity)
+
+    @Query("DELETE FROM $REVIEW_TABLE WHERE game_id = :gameId")
+    suspend fun deleteAllByGameId(gameId: Long)
 }

@@ -5,9 +5,11 @@ class GamesUseCases(
     val getGamesUseCase: GetGamesUseCase,
     val getFavouriteGamesUseCase: GetFavouriteGamesUseCase,
     val getFavouriteGameIdsUseCase: GetFavouriteGameIdsUseCase,
-    val getGameReviewsUseCase: GetGameReviewsUseCase,
+    val getGameReviewsByGameIdUseCase: GetGameReviewsByGameIdUseCase,
     val saveGameUseCase: SaveGameUseCase,
     val saveGameReviewUseCase: SaveGameReviewUseCase,
-    val deleteGameUseCase: DeleteGameUseCase
+    val deleteGameUseCase: DeleteGameUseCase,
+    val deleteGameReviewUseCase: DeleteGameReviewUseCase,
+    val deleteGamesReviewsByGameIdUseCase: DeleteGameReviewsByGameIdUseCase
 
 )
