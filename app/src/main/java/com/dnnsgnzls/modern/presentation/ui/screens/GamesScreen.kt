@@ -16,7 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.dnnsgnzls.modern.domain.model.Games
+import com.dnnsgnzls.modern.domain.model.Game
 import com.dnnsgnzls.modern.framework.utils.Response
 import com.dnnsgnzls.modern.framework.utils.SnackbarMessage
 import com.dnnsgnzls.modern.presentation.ui.nav.Screen
@@ -33,7 +33,7 @@ fun GameListScreen(
     paddingValues: PaddingValues
 ) {
     val favouriteGameIdsState: Response<List<Long>> by gamesViewModel.favouriteGameIds.collectAsStateWithLifecycle()
-    val gamesState: Response<Games> by gamesViewModel.games.collectAsStateWithLifecycle()
+    val gamesState: Response<List<Game>> by gamesViewModel.games.collectAsStateWithLifecycle()
     val queryTextState: String by gamesViewModel.queryText.collectAsStateWithLifecycle()
     val composableScope = rememberCoroutineScope()
 
@@ -93,7 +93,8 @@ fun GameListScreen(
                     val isFavourite = favGameIds.contains(game.id)
                     gamesViewModel.saveOrDeleteGameWithMessage(game, isFavourite)
                 }
-            }
+            },
+            expandable = false
         )
     }
 }

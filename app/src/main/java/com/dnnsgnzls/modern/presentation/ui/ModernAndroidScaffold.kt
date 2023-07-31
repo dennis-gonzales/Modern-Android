@@ -14,6 +14,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.dnnsgnzls.modern.domain.mock.Dota2
+import com.dnnsgnzls.modern.domain.model.Review
 import com.dnnsgnzls.modern.presentation.ui.nav.BottomNavigation
 import com.dnnsgnzls.modern.presentation.ui.nav.Screen
 import com.dnnsgnzls.modern.presentation.ui.theme.ModernAndroidTheme
@@ -35,7 +37,7 @@ fun ModernAndroidScaffold() {
         Scaffold(
             snackbarHost = { SnackbarHost(snackbarHostState) },
             bottomBar = {
-                AnimatedVisibility (
+                AnimatedVisibility(
                     visible = currentRoute != Screen.GameDetails.route,
                     enter = expandVertically(),
                     exit = shrinkVertically()
@@ -48,7 +50,7 @@ fun ModernAndroidScaffold() {
                 }
             }
         ) { paddingValues ->
-            NavHost(navController = navController, startDestination = Screen.Games.route) {
+            NavHost(navController = navController, startDestination = Screen.Favourites.route) {
                 composable(Screen.Games.route) {
                     GameListScreen(
                         gamesViewModel = gamesViewModel,
@@ -68,8 +70,13 @@ fun ModernAndroidScaffold() {
                         paddingValues = paddingValues
                     )
                 }
-                composable(Screen.Favourites.route) {backStackEntry ->
-                    FavouritesScreen()
+                composable(Screen.Favourites.route) { backStackEntry ->
+                    FavouritesScreen(
+                        gamesViewModel = gamesViewModel,
+                        navController = navController,
+                        snackBarHostState = snackbarHostState,
+                        paddingValues = paddingValues
+                    )
                 }
             }
         }

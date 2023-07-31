@@ -7,6 +7,7 @@ import com.dnnsgnzls.modern.framework.network.ApiService
 import com.dnnsgnzls.modern.framework.network.RawgApi
 import com.dnnsgnzls.modern.framework.persistence.DatabaseService
 import com.dnnsgnzls.modern.framework.persistence.GameDao
+import com.dnnsgnzls.modern.framework.persistence.ReviewDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -42,6 +43,12 @@ object RepositoryModule {
         return databaseService.gameDao()
     }
 
+    /// <- `ReviewDao` is a singleton and it's lifecycle matches its parent `DatabaseService` ->
+    @Singleton
+    @Provides
+    fun provideReviewDao(databaseService: DatabaseService): ReviewDao {
+        return databaseService.reviewDao()
+    }
 
     /// <- Provides a `GamesRepository` to be used by `UseCasesModule.kt` ->
     @Singleton
@@ -49,8 +56,9 @@ object RepositoryModule {
     fun provideGamesRepository(
         rawgApi: RawgApi,
         gameDao: GameDao,
+        reviewDao: ReviewDao,
         coroutineDispatcher: CoroutineDispatcher
     ): GamesRepository {
-        return GamesRepositoryImpl(rawgApi, gameDao, coroutineDispatcher)
+        return GamesRepositoryImpl(rawgApi, gameDao, reviewDao, coroutineDispatcher)
     }
 }

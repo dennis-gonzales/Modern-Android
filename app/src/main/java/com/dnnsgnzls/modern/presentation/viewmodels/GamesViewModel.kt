@@ -3,7 +3,7 @@ package com.dnnsgnzls.modern.presentation.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dnnsgnzls.modern.domain.model.Game
-import com.dnnsgnzls.modern.domain.model.Games
+import com.dnnsgnzls.modern.domain.model.Review
 import com.dnnsgnzls.modern.domain.usecases.GamesUseCases
 import com.dnnsgnzls.modern.framework.utils.Response
 import com.dnnsgnzls.modern.framework.utils.SnackbarMessage
@@ -24,18 +24,24 @@ import javax.inject.Inject
 class GamesViewModel @Inject constructor(
     private val gamesUseCases: GamesUseCases
 ) : ViewModel() {
-    private val _games = MutableStateFlow<Response<Games>>(Response.Loading)
+    private val _games = MutableStateFlow<Response<List<Game>>>(Response.Loading)
     private val _game = MutableStateFlow<Response<Game>>(Response.Loading)
+    private val _favouriteGames = MutableStateFlow<Response<List<Game>>>(Response.Loading)
     private val _favouriteGameIds = MutableStateFlow<Response<List<Long>>>(Response.Loading)
+    private val _gameReviews = MutableStateFlow<Response<List<Review>>>(Response.Loading)
     private val _queryText = MutableStateFlow("")
     private val queryTextChannel = Channel<String>(Channel.CONFLATED)
 
-    val games: StateFlow<Response<Games>>
+    val games: StateFlow<Response<List<Game>>>
         get() = _games
     val game: StateFlow<Response<Game>>
         get() = _game
+    val favouriteGames: StateFlow<Response<List<Game>>>
+        get() = _favouriteGames
     val favouriteGameIds: StateFlow<Response<List<Long>>>
         get() = _favouriteGameIds
+    val gameReviews: StateFlow<Response<List<Review>>>
+        get() = _gameReviews
     val queryText: StateFlow<String>
         get() = _queryText
 
@@ -95,9 +101,38 @@ class GamesViewModel @Inject constructor(
         else gamesUseCases.saveGameUseCase(game).collect { emit(it) }
     }
 
+    suspend fun getFavouriteGames() {
+        gamesUseCases.getFavouriteGamesUseCase().collect { response ->
+            _favouriteGames.value = response
+        }
+    }
+
     suspend fun getFavouriteGameIds() {
         gamesUseCases.getFavouriteGameIdsUseCase().collect { response ->
             _favouriteGameIds.value = response
+        }
+    }
+
+    suspend fun saveGameReview(review: Review) {
+        gamesUseCases.saveGameReviewUseCase(review).collect {response ->
+            when (response) {
+                is Response.Success -> {
+                    val message = "${review.title} saved successfully."
+                    snackBarMessages.emit(SnackbarMessage.Success(message))
+                }
+
+                is Response.Error -> {
+                    snackBarMessages.emit(SnackbarMessage.Error(response.exception.message ?: "Unknown error"))
+                }
+
+                is Response.Loading -> {} // ignore
+            }
+        }
+    }
+
+    suspend fun getReviewsByGameId(gameId: Long) {
+        gamesUseCases.getGameReviewsUseCase(gameId).collect {reviewList ->
+            _gameReviews.value = reviewList
         }
     }
 

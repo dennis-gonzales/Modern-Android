@@ -22,6 +22,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.dnnsgnzls.modern.domain.model.Game
+import com.dnnsgnzls.modern.domain.model.Review
 import com.dnnsgnzls.modern.framework.utils.Response
 import com.dnnsgnzls.modern.framework.utils.SnackbarMessage
 import com.dnnsgnzls.modern.presentation.ui.views.GameDetailsView
@@ -38,6 +39,7 @@ fun GameDetailsScreen(
 ) {
     val favouriteGameIdsState: Response<List<Long>> by gamesViewModel.favouriteGameIds.collectAsStateWithLifecycle()
     val gameState: Response<Game> by gamesViewModel.game.collectAsStateWithLifecycle()
+    val gameReviewsState: Response<List<Review>> by gamesViewModel.gameReviews.collectAsStateWithLifecycle()
     val composableScope = rememberCoroutineScope()
 
     if (gameId == null) {
