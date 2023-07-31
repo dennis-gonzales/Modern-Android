@@ -6,6 +6,7 @@ import com.dnnsgnzls.modern.domain.model.Game
 import com.dnnsgnzls.modern.domain.model.Review
 import com.dnnsgnzls.modern.domain.usecases.GamesUseCases
 import com.dnnsgnzls.modern.framework.utils.Response
+import com.dnnsgnzls.modern.framework.utils.ResponseSnackBarHandler
 import com.dnnsgnzls.modern.framework.utils.SnackbarMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
@@ -13,6 +14,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flow
@@ -30,6 +32,8 @@ class GamesViewModel @Inject constructor(
     private val _favouriteGameIds = MutableStateFlow<Response<List<Long>>>(Response.Loading)
     private val _gameReviews = MutableStateFlow<Response<List<Review>>>(Response.Loading)
     private val _queryText = MutableStateFlow("")
+    private val _snackBarMessages = MutableSharedFlow<SnackbarMessage>()
+    private val responseSnackBarHandler = ResponseSnackBarHandler(_snackBarMessages)
     private val queryTextChannel = Channel<String>(Channel.CONFLATED)
 
     val games: StateFlow<Response<List<Game>>>
@@ -44,9 +48,8 @@ class GamesViewModel @Inject constructor(
         get() = _gameReviews
     val queryText: StateFlow<String>
         get() = _queryText
-
-    val snackBarMessages = MutableSharedFlow<SnackbarMessage>()
-
+    val snackBarMessages: SharedFlow<SnackbarMessage>
+        get() = _snackBarMessages
 
     init {
         fetchGames()
@@ -77,34 +80,20 @@ class GamesViewModel @Inject constructor(
         }
     }
 
-    suspend fun saveOrDeleteGameWithMessage(game: Game, isFavourite: Boolean) {
-        saveOrDeleteGame(game, isFavourite).collect { response ->
-            when (response) {
-                is Response.Success -> {
-                    val message = if (isFavourite) "\"${game.name}\" is no longer your favourite."
-                    else "\"${game.name}\" is now your favourite."
-
-                    snackBarMessages.emit(SnackbarMessage.Success(message))
-                }
-
-                is Response.Error -> {
-                    snackBarMessages.emit(
-                        SnackbarMessage.Error(
-                            response.exception.message ?: "Unknown error"
-                        )
-                    )
-                }
-
-                is Response.Loading -> {} // ignore
-            }
-        }
-    }
-
     private fun saveOrDeleteGame(game: Game, isFavourite: Boolean): Flow<Response<Boolean>> = flow {
         if (isFavourite) {
             gamesUseCases.deleteGameUseCase(game).collect { emit(it) }
-            deleteAllReviewsByGameId(game)
+            deleteAllReviewsByGameId(game) // when deleting a game aii the reviews are alo deleted
         } else gamesUseCases.saveGameUseCase(game).collect { emit(it) }
+    }
+
+    suspend fun saveOrDeleteGameWithMessage(game: Game, isFavourite: Boolean) {
+        saveOrDeleteGame(game, isFavourite).collect { response ->
+            val message =
+                if (isFavourite) "\"${game.name}\" is no longer your favourite."
+                else "\"${game.name}\" is now your favourite."
+            responseSnackBarHandler.handleResponse(response, message)
+        }
     }
 
     suspend fun getFavouriteGames() {
@@ -121,43 +110,15 @@ class GamesViewModel @Inject constructor(
 
     suspend fun saveGameReview(review: Review) {
         gamesUseCases.saveGameReviewUseCase(review).collect { response ->
-            when (response) {
-                is Response.Success -> {
-                    val message = "\"${review.title}\" saved successfully."
-                    snackBarMessages.emit(SnackbarMessage.Success(message))
-                }
-
-                is Response.Error -> {
-                    snackBarMessages.emit(
-                        SnackbarMessage.Error(
-                            response.exception.message ?: "Unknown error"
-                        )
-                    )
-                }
-
-                is Response.Loading -> {} // ignore
-            }
+            val message = "\"${review.title}\" saved successfully."
+            responseSnackBarHandler.handleResponse(response, message)
         }
     }
 
     suspend fun deleteGameReview(review: Review) {
         gamesUseCases.deleteGameReviewUseCase(review).collect { response ->
-            when (response) {
-                is Response.Success -> {
-                    val message = "\"${review.title}\" deleted successfully."
-                    snackBarMessages.emit(SnackbarMessage.Success(message))
-                }
-
-                is Response.Error -> {
-                    snackBarMessages.emit(
-                        SnackbarMessage.Error(
-                            response.exception.message ?: "Unknown error"
-                        )
-                    )
-                }
-
-                is Response.Loading -> {} // ignore
-            }
+            val message = "\"${review.title}\" deleted successfully."
+            responseSnackBarHandler.handleResponse(response, message)
         }
     }
 
@@ -169,19 +130,8 @@ class GamesViewModel @Inject constructor(
 
     private suspend fun deleteAllReviewsByGameId(game: Game) {
         gamesUseCases.deleteGamesReviewsByGameIdUseCase(game.id).collect { response ->
-            when (response) {
-                is Response.Success -> {} // ignore
-
-                is Response.Error -> {
-                    snackBarMessages.emit(
-                        SnackbarMessage.Error(
-                            response.exception.message ?: "Unknown error"
-                        )
-                    )
-                }
-
-                is Response.Loading -> {} // ignore
-            }
+            val message = "\"All reviews of ${game.name}\" deleted successfully."
+            responseSnackBarHandler.handleResponse(response, message)
         }
     }
 
