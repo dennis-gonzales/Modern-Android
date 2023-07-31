@@ -39,7 +39,7 @@ fun GameDetailsScreen(
 ) {
     val favouriteGameIdsState: Response<List<Long>> by gamesViewModel.favouriteGameIds.collectAsStateWithLifecycle()
     val gameState: Response<Game> by gamesViewModel.game.collectAsStateWithLifecycle()
-    val gameReviewsState: Response<List<Review>> by gamesViewModel.gameReviews.collectAsStateWithLifecycle()
+    val reviewsState: Response<List<Review>> by gamesViewModel.gameReviews.collectAsStateWithLifecycle()
     val composableScope = rememberCoroutineScope()
 
     if (gameId == null) {
@@ -66,6 +66,10 @@ fun GameDetailsScreen(
 
     LaunchedEffect(gameId) {
         gamesViewModel.fetchSingleGame(gameId)
+    }
+
+    LaunchedEffect(Unit) {
+        gamesViewModel.getReviewsByGameId(gameId.toLong())
     }
 
     LaunchedEffect(gamesViewModel.snackBarMessages) {
@@ -103,6 +107,7 @@ fun GameDetailsScreen(
 
         GameDetailsView(
             gameState = gameState,
+            reviewsState = reviewsState,
             isFavourite = isFavourite,
             onBack = { navController.popBackStack() },
             onToggleFavourite = { game ->

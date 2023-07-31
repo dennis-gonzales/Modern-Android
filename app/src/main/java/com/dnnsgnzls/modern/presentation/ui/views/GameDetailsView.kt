@@ -16,12 +16,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dnnsgnzls.modern.domain.mock.Dota2
 import com.dnnsgnzls.modern.domain.model.Game
+import com.dnnsgnzls.modern.domain.model.Review
 import com.dnnsgnzls.modern.framework.utils.Response
 import com.dnnsgnzls.modern.presentation.ui.theme.ModernAndroidTheme
 import com.dnnsgnzls.modern.presentation.ui.views.composables.BackButton
 import com.dnnsgnzls.modern.presentation.ui.views.composables.FavouriteGameButton
 import com.dnnsgnzls.modern.presentation.ui.views.composables.GameInfo
-import java.lang.Exception
 
 
 @Preview(showBackground = true)
@@ -30,6 +30,9 @@ fun PreviewGameDetailsSuccessContent() {
     ModernAndroidTheme {
         GameDetailsView(
             gameState = Response.Success(Dota2),
+            reviewsState = Response.Success(
+                listOf(Review(-1, "Test Review", "Review Details"))
+            ),
             isFavourite = true,
             onBack = { }, /* no-op for click */
             onToggleFavourite = { } /* no-op for click */
@@ -42,6 +45,7 @@ fun PreviewGameDetailsSuccessContent() {
 fun PreviewGameDetailsErrorContent() {
     ModernAndroidTheme {
         GameDetailsView(
+            Response.Error(Exception("Test exception for preview!")),
             Response.Error(Exception("Test exception for preview!")),
             isFavourite = true,
             onBack = { }, /* no-op for click */
@@ -56,6 +60,7 @@ fun PreviewGameDetailsLoadingContent() {
     ModernAndroidTheme {
         GameDetailsView(
             gameState = Response.Loading,
+            reviewsState = Response.Loading,
             isFavourite = true,
             onBack = { }, /* no-op for click */
             onToggleFavourite = { } /* no-op for click */
@@ -66,6 +71,7 @@ fun PreviewGameDetailsLoadingContent() {
 @Composable
 fun GameDetailsView(
     gameState: Response<Game>,
+    reviewsState: Response<List<Review>>,
     isFavourite: Boolean,
     onBack: () -> Unit,
     onToggleFavourite: (Game) -> Unit,
@@ -78,9 +84,11 @@ fun GameDetailsView(
                     horizontalArrangement = Arrangement.Center,
                     modifier = Modifier.padding(16.dp)
                 ) {
-                    BackButton(modifier = Modifier
-                        .weight(0.4f)
-                        .height(30.dp)) { onBack() }
+                    BackButton(
+                        modifier = Modifier
+                            .weight(0.4f)
+                            .height(30.dp)
+                    ) { onBack() }
 
                     Spacer(modifier = Modifier.size(4.dp))
 
@@ -90,6 +98,8 @@ fun GameDetailsView(
                 }
 
                 GameInfo(game = gameState.data, modifier = Modifier.padding(16.dp))
+
+                ReviewsView(reviewsState, modifier = Modifier.padding(16.dp))
             }
         }
 

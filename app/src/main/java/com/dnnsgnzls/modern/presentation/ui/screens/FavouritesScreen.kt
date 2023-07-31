@@ -80,9 +80,6 @@ fun FavouritesScreen(
             gamesState = favouriteGamesState,
             favouriteGameIds = favGameIds,
             onItemClick = { game ->
-                composableScope.launch {
-                    gamesViewModel.getReviewsByGameId(game.id)
-                }
                 navController.navigate(Screen.GameDetails.createRoute(game.id))
             },
             onToggleFavourite = { game ->

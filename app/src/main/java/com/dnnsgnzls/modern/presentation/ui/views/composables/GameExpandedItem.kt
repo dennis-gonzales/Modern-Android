@@ -16,7 +16,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -37,7 +36,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.dnnsgnzls.modern.domain.model.Review
 import com.dnnsgnzls.modern.presentation.ui.theme.ModernAndroidTheme
 
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
@@ -48,22 +46,8 @@ fun PreviewGameExpandedItem() {
     }
 }
 
-//@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-//@Composable
-//fun PreviewGameExpandedItemWithReview() {
-//    ModernAndroidTheme {
-//        val reviews = listOf(
-//            Review(1, "Test Review 1", "Test Description 1"),
-//            Review(2, "Test Review 2", "Test Description 2"),
-//            Review(3, "Test Review 3", "Test Description 3"),
-//        )
-//        GameExpandedItem(reviews) { _, _ -> } /* no-op for clicks */
-//    }
-//}
-
 @Composable
 fun GameExpandedItem(
-//    reviewList: List<Review>,
     onSaveReview: (String, String) -> Unit
 ) {
     Card(
@@ -72,36 +56,8 @@ fun GameExpandedItem(
         elevation = CardDefaults.cardElevation(defaultElevation = 10.dp),
         modifier = Modifier.padding(8.dp)
     ) {
-
-//        if (reviewList.isNotEmpty()) {
-//            GameReviews(reviewList)
-//        }
-
         SendReviewForm(onSaveReview)
     }
-
-}
-
-@Composable
-private fun GameReviews(reviewList: List<Review>) {
-    Column(
-        modifier = Modifier
-            .padding(top = 8.dp, start = 8.dp, end = 4.dp, bottom = 8.dp)
-            .fillMaxWidth()
-    ) {
-        Text(text = "ShowReviewForm", fontWeight = FontWeight.Bold)
-
-        reviewList.forEach { review ->
-            Text(text = review.title)
-            Text(text = review.text)
-        }
-
-    }
-
-    Divider(
-        color = Color.LightGray,
-        modifier = Modifier.fillMaxWidth()
-    )
 }
 
 @Composable
@@ -110,6 +66,16 @@ private fun SendReviewForm(
 ) {
     var titleState by remember { mutableStateOf("") }
     var detailsState by remember { mutableStateOf("") }
+
+
+    var titleError by remember { mutableStateOf(false) }
+    var detailsError by remember { mutableStateOf(false) }
+
+    fun validateInput(): Boolean {
+        titleError = titleState.isBlank()
+        detailsError = detailsState.isBlank()
+        return !titleError && !detailsError
+    }
 
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -127,13 +93,24 @@ private fun SendReviewForm(
                 fontWeight = FontWeight.Bold,
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             OutlinedTextField(
                 value = titleState,
-                onValueChange = { value -> titleState = value },
+                onValueChange = { value ->
+                    titleState = value
+                    titleError = value.isEmpty()
+                },
+                isError = titleError,
                 label = { Text(text = "Short Title", fontSize = 14.sp) },
-                placeholder = { Text(text = "This game is awesome!", fontSize = 14.sp) },
+                placeholder = {
+                    Text(
+                        text =
+                        if (titleError) "Please provide a title"
+                        else "This game is awesome!",
+                        fontSize = 14.sp
+                    )
+                },
                 shape = MaterialTheme.shapes.medium,
                 textStyle = TextStyle(fontSize = 14.sp),
                 modifier = Modifier
@@ -149,9 +126,20 @@ private fun SendReviewForm(
 
             OutlinedTextField(
                 value = detailsState,
-                onValueChange = { value -> detailsState = value },
+                onValueChange = { value ->
+                    detailsState = value
+                    detailsError = value.isEmpty()
+                },
+                isError = detailsError,
                 label = { Text(text = "Review Details", fontSize = 14.sp) },
-                placeholder = { Text(text = "100/10 Recommended to play!", fontSize = 14.sp) },
+                placeholder = {
+                    Text(
+                        text =
+                        if (detailsError) "Please provide a description"
+                        else "100/10 Recommended to play!",
+                        fontSize = 14.sp
+                    )
+                },
                 shape = MaterialTheme.shapes.medium,
                 textStyle = TextStyle(fontSize = 14.sp),
                 modifier = Modifier
@@ -170,15 +158,18 @@ private fun SendReviewForm(
             modifier = Modifier
                 .padding(top = 8.dp, start = 4.dp, end = 8.dp, bottom = 8.dp)
                 .background(
-                    MaterialTheme.colorScheme.tertiary,
+                    MaterialTheme.colorScheme.primary,
                     shape = CircleShape,
                 )
         ) {
             IconButton(
                 onClick = {
-                    onSaveReview(titleState, detailsState)
-                    titleState = ""
-                    detailsState = ""
+                    if (validateInput()) {
+                        onSaveReview(titleState, detailsState)
+                        // Reset input fields
+                        titleState = ""
+                        detailsState = ""
+                    }
                 },
             ) {
                 Icon(
